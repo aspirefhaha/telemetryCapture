@@ -9,4 +9,5 @@ Release
 *.pdb
 *.filters
 *.user
+*.vcxproj
 x64

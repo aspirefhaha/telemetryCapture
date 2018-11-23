@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     //ui->setupUi(this);
 	createDockWindows();
+	setFixedSize(1024, 768);
 }
 
 MainWindow::~MainWindow()
