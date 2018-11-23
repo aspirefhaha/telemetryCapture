@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "DBInConfWidget.h"
 #include "ZMQInWidget.h"
+#include "TelemetryInWidget.h"
 #include <qmessagebox.h>
 #include <QDockWidget>
 #include <QListWidget>
@@ -52,26 +53,25 @@ void MainWindow::createDockWindows()
 
 	toolBar->addAction(aboutAction);
 
-	QDockWidget * dock = new QDockWidget(tr("数据入"), this);
+    QDockWidget * dock = new QDockWidget(QString::fromLocal8Bit("遥测入"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	/*QListWidget * customerList = new QListWidget(dock);
-	customerList->addItems(QStringList() << "John");*/
-	/*Ui::DBConf dbconf;
-	QWidget * customerWidget = new QWidget(this);
-	dbconf.setupUi(customerWidget);*/
+	TelemetryInWidget * telein = new TelemetryInWidget(this);
+	dock->setWidget(telein);
+	addDockWidget(Qt::LeftDockWidgetArea, dock); 
+	
+	dock = new QDockWidget(QString::fromLocal8Bit("数据入"), this);
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
 	DBInConfWidget * dbinconfDlg = new DBInConfWidget(this);
-
-	//dock->setWidget(customerWidget);
 	dock->setWidget(dbinconfDlg);
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
 
-	dock = new QDockWidget(tr("串联入"), this);
+    dock = new QDockWidget(QString::fromLocal8Bit("串联入"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
 	ZMQInWidget * zmqin = new ZMQInWidget(this);
-
-	//dock->setWidget(customerWidget);
 	dock->setWidget(zmqin);
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
+
+	
 
 
 	dock = new QDockWidget(tr("Paragraphs"), this);

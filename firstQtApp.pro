@@ -25,10 +25,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    DBInConfWidget.cpp \
+    TelemetryInWidget.cpp \
+    ZMQInWidget.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    DBInConfWidget.h \
+    TelemetryInWidget.h \
+    ZMQInWidget.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    dbinconf.ui \
+    telemetryin.ui \
+    zmqin.ui
