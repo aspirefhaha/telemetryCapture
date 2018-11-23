@@ -28,16 +28,22 @@ SOURCES += \
         mainwindow.cpp \
     DBInConfWidget.cpp \
     TelemetryInWidget.cpp \
-    ZMQInWidget.cpp
+    ZMQInWidget.cpp \
+    ZMQOutWidget.cpp \
+    DBOutWidget.cpp
 
 HEADERS += \
         mainwindow.h \
     DBInConfWidget.h \
     TelemetryInWidget.h \
-    ZMQInWidget.h
+    ZMQInWidget.h \
+    ZMQOutWidget.h \
+    DBOutWidget.h
 
 FORMS += \
         mainwindow.ui \
     dbinconf.ui \
     telemetryin.ui \
-    zmqin.ui
+    zmqin.ui \
+    zmqout.ui \
+    dbout.ui

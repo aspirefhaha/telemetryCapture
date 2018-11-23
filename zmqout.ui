@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZMQInForm</class>
- <widget class="QWidget" name="ZMQInForm">
+ <class>fZMQOut</class>
+ <widget class="QWidget" name="fZMQOut">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>320</width>
-    <height>125</height>
+    <height>117</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ZMQIn</string>
+   <string>Form</string>
   </property>
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
@@ -35,7 +35,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>ZMQ源</string>
+         <string>ZMQ出口</string>
         </property>
        </widget>
       </item>

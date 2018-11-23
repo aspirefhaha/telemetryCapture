@@ -10,4 +10,5 @@ Release
 *.filters
 *.user
 *.vcxproj
+*.sln
 x64
