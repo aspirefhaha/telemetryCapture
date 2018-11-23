@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "DBInConfWidget.h"
+#include "ZMQInWidget.h"
 #include <qmessagebox.h>
 #include <QDockWidget>
 #include <QListWidget>
@@ -28,7 +29,6 @@ slots void MainWindow::hello1()
 
 void MainWindow::createDockWindows()
 {
-	
 
 	QMenuBar * menuBar = new QMenuBar(this);
 	setMenuBar(menuBar);
@@ -52,7 +52,7 @@ void MainWindow::createDockWindows()
 
 	toolBar->addAction(aboutAction);
 
-	QDockWidget * dock = new QDockWidget(tr("DBConfiguration"), this);
+	QDockWidget * dock = new QDockWidget(tr("数据入"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
 	/*QListWidget * customerList = new QListWidget(dock);
 	customerList->addItems(QStringList() << "John");*/
@@ -63,7 +63,15 @@ void MainWindow::createDockWindows()
 
 	//dock->setWidget(customerWidget);
 	dock->setWidget(dbinconfDlg);
-	addDockWidget(Qt::RightDockWidgetArea, dock);
+	addDockWidget(Qt::LeftDockWidgetArea, dock);
+
+	dock = new QDockWidget(tr("串联入"), this);
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
+	ZMQInWidget * zmqin = new ZMQInWidget(this);
+
+	//dock->setWidget(customerWidget);
+	dock->setWidget(zmqin);
+	addDockWidget(Qt::LeftDockWidgetArea, dock);
 
 
 	dock = new QDockWidget(tr("Paragraphs"), this);

@@ -8,8 +8,14 @@ DBInConfWidget::DBInConfWidget(QWidget * parent):QWidget(parent), ui(new Ui::DBC
 }
 
 
+
 DBInConfWidget::~DBInConfWidget()
 {
+}
+
+QSize DBInConfWidget::sizeHint() const
+{
+	return QSize(320, 240);
 }
 
 void DBInConfWidget::ckAllControls()

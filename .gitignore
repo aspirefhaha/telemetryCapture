@@ -1,0 +1,12 @@
+GeneratedFiles
+Debug
+Release
+*.exe
+*.hint
+*.vs
+*.stash
+*.ilk
+*.pdb
+*.filters
+*.user
+x64

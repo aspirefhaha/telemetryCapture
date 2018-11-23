@@ -1,6 +1,7 @@
 #pragma once
+#pragma execution_character_set("utf-8")
 #include <QWidget>
-#include <ui_dbinconf.h>
+#include "ui_dbinconf.h"
 
 namespace Ui {
 	class DBInConfWidget;
@@ -15,6 +16,9 @@ public:
 	~DBInConfWidget();
 private:
 	Ui::DBConf *ui;
+
+public:
+	QSize sizeHint() const;
 
 public slots:
 	void ckAllControls();
