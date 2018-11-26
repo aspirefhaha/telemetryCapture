@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts serialport
 
 TARGET = firstQtApp
 TEMPLATE = app
@@ -30,7 +30,8 @@ SOURCES += \
     TelemetryInWidget.cpp \
     ZMQInWidget.cpp \
     ZMQOutWidget.cpp \
-    DBOutWidget.cpp
+    DBOutWidget.cpp \
+    CenterWidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,7 +39,8 @@ HEADERS += \
     TelemetryInWidget.h \
     ZMQInWidget.h \
     ZMQOutWidget.h \
-    DBOutWidget.h
+    DBOutWidget.h \
+    CenterWidget.h
 
 FORMS += \
         mainwindow.ui \
@@ -46,4 +48,5 @@ FORMS += \
     telemetryin.ui \
     zmqin.ui \
     zmqout.ui \
-    dbout.ui
+    dbout.ui \
+    centerwindow.ui

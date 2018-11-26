@@ -4,10 +4,12 @@
 #include "ZMQInWidget.h"
 #include "ZMQOutWidget.h"
 #include "DBOutWidget.h"
+#include "CenterWidget.h"
 #include "TelemetryInWidget.h"
 #include <qmessagebox.h>
 #include <QDockWidget>
 #include <QListWidget>
+#include <QTextCodec>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -38,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	createDockWindows();
 
 	connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(aboutQt()));
-	setMinimumSize(1024, 768);
+    setMinimumSize(1280, 768);
 }
 
 MainWindow::~MainWindow()
@@ -52,39 +54,50 @@ slots void MainWindow::hello1()
 	QMessageBox::critical(NULL, "critical", "Content", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 }
 
+QString MainWindow::ToQString(const string& cstr)
+{
+    QTextCodec* pCodec = QTextCodec::codecForName("gb2312");
+    if(!pCodec) return "";
+
+    QString qstr = pCodec->toUnicode(cstr.c_str(), cstr.length());
+    return qstr;
+}
 
 
 void MainWindow::createDockWindows()
 {
-    QDockWidget * dock = new QDockWidget(QString::fromLocal8Bit("遥测入"), this);
+    QDockWidget * dock = new QDockWidget(ToQString("遥测入"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
 	TelemetryInWidget * telein = new TelemetryInWidget(this);
 	dock->setWidget(telein);
 	addDockWidget(Qt::LeftDockWidgetArea, dock); 
 	
-	dock = new QDockWidget(QString::fromLocal8Bit("数据库入"), this);
+    dock = new QDockWidget(ToQString("数据库入"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
 	DBInConfWidget * dbinconfDlg = new DBInConfWidget(this);
 	dock->setWidget(dbinconfDlg);
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
 
-    dock = new QDockWidget(QString::fromLocal8Bit("串联入"), this);
+    dock = new QDockWidget(ToQString("串联入"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
 	ZMQInWidget * zmqin = new ZMQInWidget(this);
 	dock->setWidget(zmqin);
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
 
-	dock = new QDockWidget(QString::fromLocal8Bit("串联出"), this);
+    dock = new QDockWidget(ToQString("串联出"), this);
 	dock->setAllowedAreas(Qt::RightDockWidgetArea);
 	ZMQOutWidget * zmqout = new ZMQOutWidget(this);
 	dock->setWidget(zmqout);
 	addDockWidget(Qt::RightDockWidgetArea, dock);
 
-	dock = new QDockWidget(QString::fromLocal8Bit("数据库出"), this);
+    dock = new QDockWidget(ToQString("数据库出"), this);
 	dock->setAllowedAreas(Qt::RightDockWidgetArea);
 	DBOutWidget * dbout = new DBOutWidget(this);
 	dock->setWidget(dbout);
 	addDockWidget(Qt::RightDockWidgetArea, dock);
+
+    CenterWidget * centerWidget = new CenterWidget(this);
+    setCentralWidget(centerWidget);
 
 	/*dock = new QDockWidget(tr("Paragraphs"), this);
 	QListWidget * paragraphList = new QListWidget(dock);
