@@ -15,7 +15,7 @@ DBInConfWidget::~DBInConfWidget()
 
 QSize DBInConfWidget::sizeHint() const
 {
-	return QSize(320, 240);
+	return QSize(320, 180);
 }
 
 void DBInConfWidget::ckAllControls()

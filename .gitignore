@@ -9,4 +9,8 @@ Release
 *.pdb
 *.filters
 *.user
+*.vcxproj
+*.sln
 x64
+firstQtApp.pro.user.*
+.DS_Store

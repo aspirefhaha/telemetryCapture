@@ -1,6 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
+#include <string>
+
+using namespace std;
 
 namespace Ui {
 class MainWindow;
@@ -17,11 +20,13 @@ public:
 private:
     Ui::MainWindow *ui;
 
+
 public slots:
 	void hello1();
 	void aboutQt();
 public:
 	void createDockWindows();
+    static QString ToQString(const std::string& cstr);
 };
 
 #endif // MAINWINDOW_H
