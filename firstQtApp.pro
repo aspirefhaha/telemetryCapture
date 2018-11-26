@@ -31,7 +31,11 @@ SOURCES += \
     ZMQInWidget.cpp \
     ZMQOutWidget.cpp \
     DBOutWidget.cpp \
-    CenterWidget.cpp
+    CenterWidget.cpp \
+    callout.cpp \
+    chartView.cpp \
+    chartWidget.cpp \
+    barwidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -40,7 +44,11 @@ HEADERS += \
     ZMQInWidget.h \
     ZMQOutWidget.h \
     DBOutWidget.h \
-    CenterWidget.h
+    CenterWidget.h \
+    callout.h \
+    chartView.h \
+    chartWidget.h \
+    barwidget.h
 
 FORMS += \
         mainwindow.ui \
@@ -49,4 +57,6 @@ FORMS += \
     zmqin.ui \
     zmqout.ui \
     dbout.ui \
-    centerwindow.ui
+    centerwindow.ui \
+    chartwindow.ui \
+    barwindow.ui

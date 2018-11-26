@@ -2,6 +2,9 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QByteArray>
+#include "chartWidget.h"
+#include "barwidget.h"
+#include <QDebug>
 
 CenterWidget::CenterWidget(QWidget * parent):
     QWidget(parent),
@@ -9,6 +12,13 @@ CenterWidget::CenterWidget(QWidget * parent):
 {
     ui->setupUi(this);
     mockData();
+    chartwidget = new chartWidget(this);
+    barwidget = new barWidget(this);
+    ui->tabWidget->insertTab(0,chartwidget,"Chart");
+    ui->tabWidget->insertTab(1,barwidget,"Bar");
+    ui->tabWidget->setCurrentIndex(0);
+
+    connect(ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(on_centerTabChanged(int)));
 }
 
 CenterWidget::~CenterWidget()
@@ -19,6 +29,14 @@ CenterWidget::~CenterWidget()
 void CenterWidget::mockData()
 {
     //ui->listView->add
+}
+
+void CenterWidget:: on_centerTabChanged(int idx)
+{
+    qDebug() << idx;
+    if(idx==1){
+        barwidget->updateBarData();
+    }
 }
 
 void CenterWidget::on_listWidget_itemClicked(QListWidgetItem *item)

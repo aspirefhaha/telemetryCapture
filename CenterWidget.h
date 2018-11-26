@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include "ui_centerwindow.h"
+#include "barwidget.h"
 
 namespace Ui {
     class CenterWidget;
@@ -17,9 +18,12 @@ public:
 
 private slots:
     void on_listWidget_itemClicked(QListWidgetItem *item);
+    void on_centerTabChanged(int idx);
 
 private:
     Ui::centerWidget *ui;
+    QWidget * chartwidget;
+    barWidget * barwidget;
     void mockData();
 };
 
