@@ -18,7 +18,7 @@ CenterWidget::CenterWidget(QWidget * parent):
     ui->tabWidget->insertTab(1,barwidget,"Bar");
     ui->tabWidget->setCurrentIndex(0);
     //ui->openGLWidget = new GLWidget(size().width(),size().height());
-    m_pGLWidget = new GLWidget(100,100,this);
+    m_pGLWidget = new SpaceTrekGLWidget(100,100,this);
     ui->gridLayout->addWidget(m_pGLWidget,0,0);
 
     connect(ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(on_centerTabChanged(int)));

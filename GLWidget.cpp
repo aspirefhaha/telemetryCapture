@@ -1,4 +1,4 @@
-// GLWidget.cpp 包含了主窗口成员函数的实现
+// SpaceTrekGLWidget.cpp 包含了主窗口成员函数的实现
 // Made By Jiangcaiyang
 
 #include <QtGui>
@@ -11,7 +11,7 @@
 #include "GLWidget.h"
 
 /*---------------------------------------------------------------------------*/
-GLWidget::GLWidget( int w,int h,QWidget* parent ):QOpenGLWidget(parent),
+SpaceTrekGLWidget::SpaceTrekGLWidget( int w,int h,QWidget* parent ):QOpenGLWidget(parent),
     m_pitch(0.0),m_roll(0.0),m_yaw(0.0)
   //,m_LeftPressPos(0,0),m_RightPressPos(0,0)
 {
@@ -27,12 +27,12 @@ GLWidget::GLWidget( int w,int h,QWidget* parent ):QOpenGLWidget(parent),
     m_3DS.Load( ":/rocket_ok.3ds" );
 }
 /*---------------------------------------------------------------------------*/
-GLWidget::~GLWidget( void )
+SpaceTrekGLWidget::~SpaceTrekGLWidget( void )
 {
     m_3DS.ReleaseGL( );
 }
 /*---------------------------------------------------------------------------*/
-void GLWidget::initializeGL( void )
+void SpaceTrekGLWidget::initializeGL( void )
 {
     initializeOpenGLFunctions();
     // 隐式调用了makeCurrent()函数
@@ -44,7 +44,7 @@ void GLWidget::initializeGL( void )
     m_3DS.InitGL( );
 }
 /*---------------------------------------------------------------------------*/
-void GLWidget::resizeGL( int width, int height )
+void SpaceTrekGLWidget::resizeGL( int width, int height )
 {
     // 改变大小时程序如何应对？
     GLdouble aspectRatio = GLdouble( width ) / GLdouble( height );
@@ -74,7 +74,7 @@ void GLWidget::resizeGL( int width, int height )
 
 }
 /*---------------------------------------------------------------------------*/
-void GLWidget::paintEvent( QPaintEvent* )
+void SpaceTrekGLWidget::paintEvent( QPaintEvent* )
 {
     Draw3D( );
     Draw2D( );
@@ -82,7 +82,7 @@ void GLWidget::paintEvent( QPaintEvent* )
 static
 QPoint              m_LeftPressPos;
 QPoint              m_RightPressPos;
-void GLWidget::mousePressEvent(QMouseEvent * event)
+void SpaceTrekGLWidget::mousePressEvent(QMouseEvent * event)
 {
     // Q_UNUSED(event);
     // makeCurrent();
@@ -94,14 +94,14 @@ void GLWidget::mousePressEvent(QMouseEvent * event)
     }
 }
 
-void GLWidget::mouseReleaseEvent(QMouseEvent *event)
+void SpaceTrekGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     makeCurrent();
     update();
 }
 
-void GLWidget::mouseMoveEvent(QMouseEvent *event)
+void SpaceTrekGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
     //Q_UNUSED(event);
     makeCurrent();
@@ -121,7 +121,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     }
 }
 /*---------------------------------------------------------------------------*/
-void GLWidget::Draw2D( void )
+void SpaceTrekGLWidget::Draw2D( void )
 {
     QRect rect( width( ) * 1 / 20, height( ) * 1 / 10, width( ) * 10 / 24, height( ) * 11 / 40 );
     //QString text( tr( "Qt Load3DS example\n[Operations]\nUse [Enter] key to open 3DS file, [Up][Down][Left][Right] key and mouse wheel to move the camera." ) );
@@ -138,7 +138,7 @@ void GLWidget::Draw2D( void )
     windowPainter.drawText( rect, Qt::AlignCenter | Qt::TextWordWrap, text );
 }
 /*---------------------------------------------------------------------------*/
-void GLWidget::Draw3D( void )
+void SpaceTrekGLWidget::Draw3D( void )
 {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glEnable(GL_DEPTH_TEST);
@@ -154,7 +154,7 @@ void GLWidget::Draw3D( void )
     glDisable(GL_DEPTH_TEST);
 }
 
-void GLWidget::pitchChanged(qreal angle)
+void SpaceTrekGLWidget::pitchChanged(qreal angle)
 {
     makeCurrent();
     m_pitch=angle;
@@ -162,7 +162,7 @@ void GLWidget::pitchChanged(qreal angle)
 }
 
 /*---------------------------------------------------------------------------*/
-void GLWidget::keyPressEvent( QKeyEvent* event )
+void SpaceTrekGLWidget::keyPressEvent( QKeyEvent* event )
 {
     static bool m_openLight = false;
     switch ( event->key( ) )
@@ -247,7 +247,7 @@ void GLWidget::keyPressEvent( QKeyEvent* event )
     update( );
 }
 /*---------------------------------------------------------------------------*/
-void GLWidget::wheelEvent( QWheelEvent* event )
+void SpaceTrekGLWidget::wheelEvent( QWheelEvent* event )
 {
     m_Camera.MoveForward( qreal( event->delta( ) ) / 100.0 );
     emit update( );
