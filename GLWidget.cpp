@@ -104,20 +104,20 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
     //Q_UNUSED(event);
-    //makeCurrent();
+    makeCurrent();
     if(event->buttons() & Qt::RightButton)
     {
         //qDebug() << "right Button" ;
         //qDebug() << m_PressPos - event->pos();
         m_pitch = (m_RightPressPos- event->pos()).x();
         m_roll = (m_RightPressPos - event->pos()).y();
-        //update();
+        update();
     }
     else if(event->buttons() & Qt::LeftButton)
     {
         m_yaw = (m_LeftPressPos- event->pos()).x();
         m_roll = (m_LeftPressPos - event->pos()).y();
-        //update();
+        update();
     }
 }
 /*---------------------------------------------------------------------------*/
