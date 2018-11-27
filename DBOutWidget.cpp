@@ -14,5 +14,5 @@ DBOutWidget::~DBOutWidget()
 
 QSize DBOutWidget::sizeHint() const
 {
-	return QSize(320,180);
+    return QSize(260,180);
 }

@@ -12,5 +12,5 @@ TelemetryInWidget::~TelemetryInWidget()
 
 QSize TelemetryInWidget::sizeHint() const
 {
-	return QSize(320,113);
+    return QSize(260,113);
 }

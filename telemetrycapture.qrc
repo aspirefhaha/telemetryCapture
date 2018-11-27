@@ -1,0 +1,6 @@
+<RCC>
+<qresource prefix="/">
+    <file>rocket_ok.3ds</file>
+    <file>images/qt.png</file>
+</qresource>
+</RCC>

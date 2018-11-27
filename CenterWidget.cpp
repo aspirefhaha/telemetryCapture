@@ -17,14 +17,39 @@ CenterWidget::CenterWidget(QWidget * parent):
     ui->tabWidget->insertTab(0,chartwidget,"Chart");
     ui->tabWidget->insertTab(1,barwidget,"Bar");
     ui->tabWidget->setCurrentIndex(0);
+    //ui->openGLWidget = new GLWidget(size().width(),size().height());
+    m_pGLWidget = new GLWidget(100,100,this);
+    ui->gridLayout->addWidget(m_pGLWidget,0,0);
 
     connect(ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(on_centerTabChanged(int)));
+
 }
 
 CenterWidget::~CenterWidget()
 {
 
 }
+
+
+void CenterWidget::keyPressEvent(QKeyEvent *event)
+{
+    //m_pGLWidget->keyPressEvent(event);
+    qDebug() << "keyPressEvent";
+}
+
+void CenterWidget::wheelEvent(QWheelEvent *event)
+{
+    //m_pGLWidget->wheelEvent(event);
+    qDebug() << "wheelEvent";
+}
+
+//void CenterWidget::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if(event->buttons() & Qt::RightButton)
+//    {
+//        qDebug() << "right Button";
+//    }
+//}
 
 void CenterWidget::mockData()
 {
