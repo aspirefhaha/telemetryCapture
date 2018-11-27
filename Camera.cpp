@@ -1,5 +1,11 @@
+#ifdef _WIN32
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+#elif __APPLE__
 #include <gl.h>
 #include <glu.h>
+#endif
 #include <QMatrix4x4>
 #include "Camera.h"
 /*---------------------------------------------------------------------------*/

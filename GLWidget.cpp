@@ -3,7 +3,11 @@
 
 #include <QtGui>
 #include <QtOpenGL>
+#ifdef WIN32
+#include <GL/glu.h>
+#elif __APPLE__
 #include <glu.h>
+#endif
 #include "GLWidget.h"
 
 /*---------------------------------------------------------------------------*/
@@ -90,29 +94,36 @@ void GLWidget::mousePressEvent(QMouseEvent * event)
     }
 }
 
-void GLWidget::mouseMoveEvent(QMouseEvent *event)
+void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     makeCurrent();
+    update();
+}
+
+void GLWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    //Q_UNUSED(event);
+    //makeCurrent();
     if(event->buttons() & Qt::RightButton)
     {
         //qDebug() << "right Button" ;
         //qDebug() << m_PressPos - event->pos();
         m_pitch = (m_RightPressPos- event->pos()).x();
         m_roll = (m_RightPressPos - event->pos()).y();
-        update();
+        //update();
     }
     else if(event->buttons() & Qt::LeftButton)
     {
         m_yaw = (m_LeftPressPos- event->pos()).x();
         m_roll = (m_LeftPressPos - event->pos()).y();
-        update();
+        //update();
     }
 }
 /*---------------------------------------------------------------------------*/
 void GLWidget::Draw2D( void )
 {
-    QRect rect( width( ) * 2 / 3, height( ) * 3 / 5, width( ) * 7 / 24, height( ) * 11 / 40 );
+    QRect rect( width( ) * 1 / 20, height( ) * 1 / 10, width( ) * 10 / 24, height( ) * 11 / 40 );
     //QString text( tr( "Qt Load3DS example\n[Operations]\nUse [Enter] key to open 3DS file, [Up][Down][Left][Right] key and mouse wheel to move the camera." ) );
     QString text( tr( "yaw %1\npitch %2\nroll %3" ).arg(m_yaw).arg(m_pitch).arg(m_roll) );
     QColor rectColor( 33, 33, 33, 125 ), textColor( 250, 250, 250 );
@@ -120,7 +131,7 @@ void GLWidget::Draw2D( void )
     windowPainter.setPen( QPen( rectColor ) );
     windowPainter.setBrush( QBrush( rectColor ) );
     QFont oriFont = windowPainter.font();
-    oriFont.setPointSize(width( )/15);
+    oriFont.setPointSize(height( )/15);
     windowPainter.setFont(oriFont);
     windowPainter.drawRect( rect );
     windowPainter.setPen( QPen( textColor ) );

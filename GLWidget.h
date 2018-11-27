@@ -21,6 +21,7 @@ public:
     void wheelEvent( QWheelEvent* event );
     void mouseMoveEvent( QMouseEvent * event);
     void mousePressEvent(QMouseEvent * event);
+    void mouseReleaseEvent(QMouseEvent * event);
 
     // 本类的函数
     void Draw3D( void );

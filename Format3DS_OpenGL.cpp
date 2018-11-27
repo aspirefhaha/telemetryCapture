@@ -1,6 +1,11 @@
 #define _3DS_OPENGL_
+#ifdef _WIN32
+#include <GL/gl.h>
+#include <GL/glext.h>
+#elif __APPLE__
 #include <gl.h>
 #include <glext.h>
+#endif
 #include <QImage>
 #include <QMessageBox>
 #include "Format3DS.h"
