@@ -141,6 +141,7 @@ void GLWidget::Draw2D( void )
 void GLWidget::Draw3D( void )
 {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glEnable(GL_DEPTH_TEST);
     glPushMatrix( );
     m_Camera.Apply( );
         glPushMatrix();
@@ -150,6 +151,7 @@ void GLWidget::Draw3D( void )
         m_3DS.RenderGL( );
         glPopMatrix();
     glPopMatrix( );
+    glDisable(GL_DEPTH_TEST);
 }
 
 void GLWidget::pitchChanged(qreal angle)
