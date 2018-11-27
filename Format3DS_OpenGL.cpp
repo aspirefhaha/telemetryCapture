@@ -1,5 +1,6 @@
 #define _3DS_OPENGL_
 #ifdef _WIN32
+#include <windows.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
 #elif __APPLE__

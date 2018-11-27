@@ -1,5 +1,4 @@
-#ifndef GLWIDGET_H
-#define GLWIDGET_H
+#pragma once
 
 #define _3DS_OPENGL_
 #include <QOpenGLWidget>
@@ -8,12 +7,12 @@
 #include "Format3DS.h"
 
 /*---------------------------------------------------------------------------*/
-class GLWidget : public QOpenGLWidget, QOpenGLFunctions
+class SpaceTrekGLWidget : public QOpenGLWidget, QOpenGLFunctions
 {
     Q_OBJECT
 public:
-    GLWidget( int w,int h,QWidget* parent = 0 );
-    ~GLWidget( void );
+    SpaceTrekGLWidget( int w,int h,QWidget* parent = 0 );
+    ~SpaceTrekGLWidget( void );
     void initializeGL( void );
     void resizeGL( int width, int height );
     void paintEvent( QPaintEvent* event );
@@ -38,4 +37,3 @@ private:
     qreal               m_yaw;
 };
 
-#endif // GLWIDGET_H

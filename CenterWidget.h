@@ -25,7 +25,7 @@ private:
     Ui::centerWidget *ui;
     QWidget * chartwidget;
     barWidget * barwidget;
-    GLWidget * m_pGLWidget;
+   SpaceTrekGLWidget * m_pGLWidget;
     void mockData();
 
 public:
