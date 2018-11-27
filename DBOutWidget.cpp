@@ -14,5 +14,6 @@ DBOutWidget::~DBOutWidget()
 
 QSize DBOutWidget::sizeHint() const
 {
-    return QSize(260,180);
+    QRect rect = ui->formLayout->geometry();
+    return QSize(rect.width(),rect.height());
 }

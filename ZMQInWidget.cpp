@@ -14,7 +14,8 @@ ZMQInWidget::~ZMQInWidget()
 
 QSize ZMQInWidget::sizeHint() const
 {
-    return QSize(260,125);
+    QRect rect = ui->verticalLayout->geometry();
+    return QSize(rect.width(),rect.height());
 }
 
 void ZMQInWidget::testSlot()

@@ -11,5 +11,6 @@ ZMQOutWidget::~ZMQOutWidget()
 
 QSize ZMQOutWidget::sizeHint() const
 {
-    return QSize(260,117);
+    QRect rect = ui->verticalLayout->geometry();
+    return QSize(rect.width(),rect.height());
 }

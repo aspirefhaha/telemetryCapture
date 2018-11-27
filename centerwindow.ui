@@ -17,16 +17,6 @@
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="1" column="0">
-      <widget class="QTextEdit" name="textEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>1</horstretch>
-         <verstretch>2</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
       <widget class="QListWidget" name="listWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -66,12 +56,23 @@
         <attribute name="title">
          <string>Tab 1</string>
         </attribute>
+        <zorder>textEdit</zorder>
        </widget>
        <widget class="QWidget" name="barTab">
         <attribute name="title">
          <string>Tab 2</string>
         </attribute>
        </widget>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QTextEdit" name="textEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>1</horstretch>
+         <verstretch>2</verstretch>
+        </sizepolicy>
+       </property>
       </widget>
      </item>
     </layout>
