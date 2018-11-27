@@ -13,6 +13,9 @@ public:
 	~TelemetryInWidget();
 private:
 	Ui::fTelemetryIn * ui;
+    QButtonGroup * saveGroup;
+    QButtonGroup * sendGroup;
+    QButtonGroup * controlGroup;
 public:
 	QSize sizeHint() const;
 
