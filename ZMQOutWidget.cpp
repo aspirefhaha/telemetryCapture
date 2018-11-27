@@ -11,5 +11,5 @@ ZMQOutWidget::~ZMQOutWidget()
 
 QSize ZMQOutWidget::sizeHint() const
 {
-	return QSize(320,117);
+    return QSize(260,117);
 }

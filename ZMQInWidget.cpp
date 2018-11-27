@@ -14,7 +14,7 @@ ZMQInWidget::~ZMQInWidget()
 
 QSize ZMQInWidget::sizeHint() const
 {
-	return QSize(320,125);
+    return QSize(260,125);
 }
 
 void ZMQInWidget::testSlot()

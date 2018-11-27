@@ -52,7 +52,7 @@ void chartWidget::initChart()
 {
     series = new QLineSeries;
     series->setUseOpenGL(true);//openGl 加速
-    qDebug()<<series->useOpenGL();
+    //qDebug()<<series->useOpenGL();
 
     chart->addSeries(series);
 

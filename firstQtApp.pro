@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts serialport
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts serialport opengl
 
 TARGET = firstQtApp
 TEMPLATE = app
@@ -35,7 +35,11 @@ SOURCES += \
     callout.cpp \
     chartView.cpp \
     chartWidget.cpp \
-    barwidget.cpp
+    barwidget.cpp \
+    Format3DS_OpenGL.cpp \
+    Format3DS.cpp \
+    GLWidget.cpp \
+    Camera.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -48,7 +52,10 @@ HEADERS += \
     callout.h \
     chartView.h \
     chartWidget.h \
-    barwidget.h
+    barwidget.h \
+    Format3DS.h \
+    GLWidget.h \
+    Camera.h
 
 FORMS += \
         mainwindow.ui \
@@ -60,3 +67,16 @@ FORMS += \
     centerwindow.ui \
     chartwindow.ui \
     barwindow.ui
+
+
+# 根据平台不同而链接不同的库
+unix {
+LIBS += -lGLU -lGL -L /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/
+}
+
+win32 {
+LIBS += -lglu32 -lopengl32
+}
+
+RESOURCES += \
+    telemetrycapture.qrc

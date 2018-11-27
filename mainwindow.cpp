@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QAction *aboutAction = new QAction(tr("AboutQt"), this);
 	aboutAction->setStatusTip(tr("About Qt"));
-	aboutAction->setIcon(QIcon("images/Qt.png"));
+    aboutAction->setIcon(QIcon(":/images/qt.png"));
 
 	QMenu *aboutMenu = menuBar->addMenu(tr("About"));
 	aboutMenu->addAction(aboutAction);
@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	createDockWindows();
 
 	connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(aboutQt()));
-    setMinimumSize(1280, 768);
+    setMinimumSize(1200, 580);
 }
 
 MainWindow::~MainWindow()

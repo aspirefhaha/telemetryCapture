@@ -3,6 +3,7 @@
 #include <QWidget>
 #include "ui_centerwindow.h"
 #include "barwidget.h"
+#include "GLWidget.h"
 
 namespace Ui {
     class CenterWidget;
@@ -24,6 +25,12 @@ private:
     Ui::centerWidget *ui;
     QWidget * chartwidget;
     barWidget * barwidget;
+    GLWidget * m_pGLWidget;
     void mockData();
+
+public:
+    void keyPressEvent( QKeyEvent* event );
+    void wheelEvent( QWheelEvent* event );
+    //void mouseMoveEvent(QMouseEvent * event);
 };
 
