@@ -1,5 +1,6 @@
 #pragma once
 #include <QWidget>
+#include <QtNetwork>
 #include "ui_telemetryin.h"
 
 namespace Ui {
@@ -18,6 +19,19 @@ private:
     QButtonGroup * controlGroup;
 public:
 	QSize sizeHint() const;
+
+public slots:
+    void processPendingDatagrams();
+    void slotConfirm();
+    void slotReset();
+    void slotStartSend();
+    void slotStopSend();
+    void slotStartSave();
+    void slotStopSave();
+    void slotLocalControl();
+    void slotRemoteControl();
+private:
+    QUdpSocket * udpSocket;
 
 };
 

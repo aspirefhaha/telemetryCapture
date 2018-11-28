@@ -25,7 +25,11 @@
      <item>
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="1">
-        <widget class="QLineEdit" name="leDataURL"/>
+        <widget class="QLineEdit" name="leDataURL">
+         <property name="text">
+          <string>225.0.58.1:60058</string>
+         </property>
+        </widget>
        </item>
        <item row="2" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -67,7 +71,11 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="leComStatusURL"/>
+        <widget class="QLineEdit" name="leComStatusURL">
+         <property name="text">
+          <string>225.0.58.2:60059</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
