@@ -25,7 +25,7 @@ public slots:
 	void hello1();
 	void aboutQt();
 public:
-	void createDockWindows();
+    void createDockWindows();
     static QString ToQString(const std::string& cstr);
 };
 

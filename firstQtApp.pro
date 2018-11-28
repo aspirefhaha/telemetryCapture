@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui widgets serialport opengl network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts serialport opengl
+greaterThan(QT_MAJOR_VERSION, 4): QT += charts
 
 TARGET = firstQtApp
 TEMPLATE = app
@@ -39,7 +39,8 @@ SOURCES += \
     Format3DS_OpenGL.cpp \
     Format3DS.cpp \
     GLWidget.cpp \
-    Camera.cpp
+    Camera.cpp \
+    commonutils.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -55,7 +56,9 @@ HEADERS += \
     barwidget.h \
     Format3DS.h \
     GLWidget.h \
-    Camera.h
+    Camera.h \
+    commonutils.h \
+    telecommuproto.h
 
 FORMS += \
         mainwindow.ui \
@@ -68,6 +71,8 @@ FORMS += \
     chartwindow.ui \
     barwindow.ui
 
+OBJECTS_DIR  = tmp
+MOC_DIR      = tmp
 
 # 根据平台不同而链接不同的库
 unix {

@@ -10,22 +10,24 @@
 barWidget::barWidget(QWidget *parent) : QWidget(parent),ui(new Ui::barwindow)
 {
     ui->setupUi(this);
-    for(int i= 0 ;i< sizeof(m_pBarsets)/sizeof(QBarSet *);i++){
+    //qDebug() << sizeof(m_pBarsets)/sizeof(QBarSet *);
+    for(unsigned long i= 0 ;i< sizeof(m_pBarsets)/sizeof(QBarSet *);i++){
         //qDebug() << "in barset " <<i;
         m_pBarsets[i]= new QBarSet("John" + QString::number(i));
 
-        * m_pBarsets[i] << 10 << 10 << 10 << 10<< 10<< 10 ;
+        * m_pBarsets[i] << 10 << 10 << 10 <<  10 <<  10<<  10;
         //m_pSeries->append(m_pBarsets[i]);
     }
 
     m_pSeries = new QBarSeries();
-    for(int i= 0 ;i< sizeof(m_pBarsets)/sizeof(QBarSet *);i++){
+    for(unsigned long i= 0 ;i< sizeof(m_pBarsets)/sizeof(QBarSet *);i++){
         //qDebug() << "in Series" <<  i;
         m_pSeries->append(m_pBarsets[i]);
     }
     m_pChart = new QChart();
 
     m_pChart->addSeries(m_pSeries);
+    //qDebug() << "series size " << m_pChart->series().size();
     m_pChart->setTitle("Simple barchart example");
     m_pChart->setAnimationOptions(QChart::SeriesAnimations);
 
@@ -51,14 +53,18 @@ barWidget::barWidget(QWidget *parent) : QWidget(parent),ui(new Ui::barwindow)
 void barWidget::updateBarData()
 {
     //m_pChart->removeAllSeries();
-    int selen = m_pChartview->chart()->series().size();
-    for(int i= 0 ;i< selen;i++){
+    unsigned long selen = m_pChartview->chart()->series().size();
+    //qDebug() << selen;
+    for(unsigned long i= 0 ;i< selen;i++){
         QBarSeries * series = (QBarSeries* )m_pChartview->chart()->series().at(i);
         series->clear();
-        QBarSet * pbarset = new QBarSet("John" + QString::number(i));
-        * pbarset<< qrand()%10 << qrand() % 10 << qrand() %10 << qrand() % 10 << qrand() % 10<< qrand() % 10 ;
-        series->append(pbarset);
+        for(unsigned long j = 0; j< sizeof(m_pBarsets)/sizeof(QBarSet *);j++){
+            QBarSet * pbarset = new QBarSet("John" + QString::number(j));
+            * pbarset<< qrand()%10 << qrand() % 10 << qrand() %10 << qrand() % 10 << qrand() % 10<< qrand() % 10 ;
+            series->append(pbarset);
+        }
+
     }
-    // m_pSeries->clear();
+
 
 }

@@ -82,15 +82,19 @@ void SpaceTrekGLWidget::paintEvent( QPaintEvent* )
 static
 QPoint              m_LeftPressPos;
 QPoint              m_RightPressPos;
+QPoint              m_MidPressPos;
 void SpaceTrekGLWidget::mousePressEvent(QMouseEvent * event)
 {
     // Q_UNUSED(event);
-    // makeCurrent();
-    if(event->buttons() & Qt::RightButton){
+    Qt::MouseButtons buttons = event->buttons();
+    if(buttons & Qt::RightButton){
         m_RightPressPos = event->pos();
     }
-    else if(event->buttons() & Qt::LeftButton){
+    if(buttons & Qt::LeftButton){
         m_LeftPressPos = event->pos();
+    }
+    if(buttons & Qt::MidButton){
+        m_MidPressPos = event->pos();
     }
 }
 
@@ -103,22 +107,21 @@ void SpaceTrekGLWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void SpaceTrekGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    //Q_UNUSED(event);
     makeCurrent();
-    if(event->buttons() & Qt::RightButton)
+    Qt::MouseButtons buttons = event->buttons();
+    if(buttons & Qt::RightButton)
     {
-        //qDebug() << "right Button" ;
-        //qDebug() << m_PressPos - event->pos();
         m_pitch = (m_RightPressPos- event->pos()).x();
-        m_roll = (m_RightPressPos - event->pos()).y();
-        update();
     }
-    else if(event->buttons() & Qt::LeftButton)
+    if(buttons & Qt::LeftButton)
     {
         m_yaw = (m_LeftPressPos- event->pos()).x();
-        m_roll = (m_LeftPressPos - event->pos()).y();
-        update();
     }
+    if(buttons & Qt::MidButton)
+    {
+        m_roll = (m_MidPressPos - event->pos()).x();
+    }
+    update();
 }
 /*---------------------------------------------------------------------------*/
 void SpaceTrekGLWidget::Draw2D( void )
