@@ -58,7 +58,7 @@ void CenterWidget::mockData()
 
 void CenterWidget:: on_centerTabChanged(int idx)
 {
-    qDebug() << idx;
+    // qDebug() << idx;
     if(idx==1){
         barwidget->updateBarData();
     }

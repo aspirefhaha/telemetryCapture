@@ -22,8 +22,21 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
      <item>
       <layout class="QFormLayout" name="formLayout">
+       <property name="verticalSpacing">
+        <number>1</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>数据组播地址</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="1">
         <widget class="QLineEdit" name="leDataURL">
          <property name="text">
@@ -31,10 +44,39 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="leCmdURL">
+         <property name="text">
+          <string>225.0.58.2:60059</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="ckEnabled">
+         <property name="text">
+          <string>启用</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>1</number>
+         </property>
+         <property name="bottomMargin">
+          <number>1</number>
+         </property>
          <item>
           <widget class="QPushButton" name="pbReset">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>重置</string>
            </property>
@@ -49,31 +91,24 @@
          </item>
         </layout>
        </item>
-       <item row="2" column="0">
-        <widget class="QCheckBox" name="ckEnabled">
-         <property name="text">
-          <string>启用</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>命令状态组播地址</string>
+          <string>指令组播地址</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>数据组播地址</string>
+          <string>状态组播地址</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="leComStatusURL">
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="leStatURL">
          <property name="text">
-          <string>225.0.58.2:60059</string>
+          <string>225.0.58.2:60060</string>
          </property>
         </widget>
        </item>
@@ -81,29 +116,19 @@
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="2" column="0">
-        <widget class="QRadioButton" name="rbLocalControl">
+       <property name="verticalSpacing">
+        <number>1</number>
+       </property>
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="rbStartSend">
          <property name="enabled">
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>本控</string>
+          <string>开始发送</string>
          </property>
          <property name="checked">
           <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QRadioButton" name="rbRemoteControl">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>远控</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -120,29 +145,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QRadioButton" name="rbStopSave">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>停止存盘</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QRadioButton" name="rbStartSend">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>开始发送</string>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="1">
         <widget class="QRadioButton" name="rbStopSend">
          <property name="enabled">
@@ -153,12 +155,83 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="1">
+        <widget class="QRadioButton" name="rbStopSave">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>停止存盘</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QRadioButton" name="rbRemoteControl">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>远控</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QRadioButton" name="rbLocalControl">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>本控</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QRadioButton" name="rbDecLock">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>解调锁定</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QRadioButton" name="rbDecUnlock">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>解调失锁</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>1</number>
+       </property>
        <item row="0" column="1">
         <widget class="QPushButton" name="pbStopSave">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>停止存盘</string>
          </property>
@@ -166,6 +239,9 @@
        </item>
        <item row="0" column="2">
         <widget class="QPushButton" name="pbStartSend">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>开始发送</string>
          </property>
@@ -173,6 +249,9 @@
        </item>
        <item row="0" column="0">
         <widget class="QPushButton" name="pbStartSave">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>开始存盘</string>
          </property>
@@ -180,6 +259,9 @@
        </item>
        <item row="1" column="2">
         <widget class="QPushButton" name="pbStopSend">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>停止发送</string>
          </property>
@@ -187,6 +269,9 @@
        </item>
        <item row="1" column="0">
         <widget class="QPushButton" name="pbLocalControl">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>本控</string>
          </property>
@@ -194,6 +279,15 @@
        </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="pbRemoteControl">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>远控</string>
          </property>

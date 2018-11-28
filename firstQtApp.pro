@@ -57,7 +57,8 @@ HEADERS += \
     Format3DS.h \
     GLWidget.h \
     Camera.h \
-    commonutils.h
+    commonutils.h \
+    telecommuproto.h
 
 FORMS += \
         mainwindow.ui \
@@ -70,6 +71,8 @@ FORMS += \
     chartwindow.ui \
     barwindow.ui
 
+OBJECTS_DIR  = tmp
+MOC_DIR      = tmp
 
 # 根据平台不同而链接不同的库
 unix {

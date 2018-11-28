@@ -1,9 +1,9 @@
 #include "commonutils.h"
 #include <QTextCodec>
 
-QString & ToQString(const std::string& cstr)
+QString ToQString(const std::string& cstr)
 {
-    QTextCodec* pCodec = QTextCodec::codecForName("gb2312");
+    QTextCodec* pCodec = QTextCodec::codecForName("UTF-8");
     QString qstr;
     if(!pCodec)
         return qstr;

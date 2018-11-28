@@ -10,7 +10,7 @@
 #include <QDockWidget>
 #include <QListWidget>
 #include <QTextCodec>
-#include "commonutils.h"
+//#include "commonutils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -53,6 +53,17 @@ MainWindow::~MainWindow()
 slots void MainWindow::hello1()
 {
 	QMessageBox::critical(NULL, "critical", "Content", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+}
+
+QString MainWindow::ToQString(const std::string& cstr)
+{
+    QTextCodec* pCodec = QTextCodec::codecForName("gb2312");
+    QString qstr;
+    if(!pCodec)
+        return qstr;
+
+    qstr = pCodec->toUnicode(cstr.c_str(), cstr.length());
+    return qstr;
 }
 
 

@@ -26,6 +26,7 @@ public slots:
 	void aboutQt();
 public:
     void createDockWindows();
+    static QString ToQString(const std::string& cstr);
 };
 
 #endif // MAINWINDOW_H
