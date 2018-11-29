@@ -29,6 +29,7 @@ TelemetryInWidget::TelemetryInWidget(QWidget * parent) :QWidget(parent), ui(new 
     connect(ui->pbStopSave,SIGNAL(clicked()),this,SLOT(slotStopSave()));
     connect(ui->pbStartSend,SIGNAL(clicked()),this,SLOT(slotStartSend()));
     connect(ui->pbStopSend,SIGNAL(clicked()),this,SLOT(slotStopSend()));
+    connect(this,SIGNAL(udpReceived(QString)),parent,SLOT(status(QString)));
 }
 
 TelemetryInWidget::~TelemetryInWidget()
@@ -37,6 +38,14 @@ TelemetryInWidget::~TelemetryInWidget()
     if(m_DataSocket!=NULL){
         delete m_DataSocket;
         m_DataSocket = NULL;
+    }
+    if(m_StatSocket!=NULL){
+        delete m_StatSocket;
+        m_StatSocket = NULL;
+    }
+    if(m_CmdSocket!=NULL){
+        delete m_CmdSocket;
+        m_CmdSocket = NULL;
     }
 }
 
@@ -132,7 +141,7 @@ bool TelemetryInWidget::initStatSocket()
         bool bindret = m_StatSocket->bind(QHostAddress::AnyIPv4,bindport,QAbstractSocket::ShareAddress);
 
         if(bindret){
-            bindret = m_StatSocket->joinMulticastGroup(QHostAddress(addraport.at(0)));
+            bindret = m_StatSocket->joinMulticastGroup(m_statTarget);
             if(!bindret){
                 QMessageBox::critical(NULL, "critical", ToQString("加入状态组播失败"), QMessageBox::Yes , QMessageBox::Yes);
                 return false;
@@ -218,52 +227,77 @@ void TelemetryInWidget::processPendingDatagrams()
 
 void TelemetryInWidget::processPendingStatgrams()
 {
-    QByteArray datagram;
-    quint64 datasize = m_StatSocket->pendingDatagramSize();
-    qDebug() << "get udp stat size: " << datasize;
-    datagram.resize(datasize);
+    QDateTime current_date_time = QDateTime::currentDateTime();
+    int datasize = (int)m_StatSocket->pendingDatagramSize();
+    QByteArray datagram(datasize,Qt::Uninitialized);
     m_StatSocket->readDatagram(datagram.data(),datagram.size());
-    qDebug() << "Receice Stat Data:" << datagram.toHex();
-    m_statBuffer+= datagram;
+    QString debugmsg =QString("%1 Receive Stat Data(%2): %3")
+            .arg(current_date_time.toString("hh:mm:ss zzz"))
+            .arg(datasize)
+            .arg(QString(datagram.toHex())) ;
+    qDebug()<< debugmsg;
+    emit udpReceived(debugmsg);
+    m_statBuffer +=  datagram;
     do {
         while(m_statBuffer.size() > 0 && !m_statBuffer.startsWith(TC_HEAD1))m_statBuffer.remove(0,1);
         if(m_statBuffer.size() > 2){
-            if(m_statBuffer.at(1) != TC_HEAD2){
+            if((unsigned char)m_statBuffer.at(1) != TC_HEAD2){
                 m_statBuffer.remove(0,2);
             }
-            else if(m_statBuffer.size() > sizeof(telecommu_stat_proto)){   //包头符合要求且包长够一个完整协议
+            else if(m_statBuffer.size() >= (int)sizeof(telecommu_stat_proto)){   //包头符合要求且包长够一个完整协议
                 if(m_statBuffer.at(2) == TC_TYPESTAT){  //是状态帧
                     telecommu_stat_proto * pStatProto = (telecommu_stat_proto *) m_statBuffer.data();
-                    unsigned char calccrc;
+                    unsigned char calccrc = 0;
                     CK_PACK_CRC(pStatProto,calccrc);
+//                    do{
+//                        unsigned char * a = (unsigned char *)pStatProto;
+//                        calccrc = 0;
+//                        for(unsigned i = 2; i<sizeof(*pStatProto)-1;i++){
+//                            calccrc += a[i];
+//                            qDebug() << QString::number(calccrc,16) << " " << QString::number(a[i],16);
+//                        }
+//                    }while(0);
                     if(calccrc == pStatProto->crc){ //校验码正常
                         if(pStatProto->savestat==0x1){
                             ui->rbStartSave->setChecked(true);
                         }
-                        else{
+                        else if (pStatProto->savestat == 0){
                             ui->rbStopSave->setChecked(true);
+                        }
+                        else{
+                            qDebug() << "unknown save stat:" << pStatProto->savestat;
                         }
                         if(pStatProto->sendstat==0x1){
                             ui->rbStartSend->setChecked(true);
                         }
+                        else if(pStatProto->sendstat==0){
+                            ui->rbStopSend->setChecked(true);
+                        }
                         else{
-                            ui->rbStartSend->setChecked(true);
+                            qDebug() << "unknown send stat:" << pStatProto->sendstat;
                         }
                         if(pStatProto->lockstat==0x1){
                             ui->rbDecLock->setChecked(true);
                         }
-                        else{
+                        else if(pStatProto->lockstat==0){
                             ui->rbDecUnlock->setChecked(true);
+                        }
+                        else{
+                            qDebug() << "unknown lock stat:" << pStatProto->lockstat;
                         }
                         if(pStatProto->controlstat==0x1){
                             ui->rbLocalControl->setChecked(true);
                         }
-                        else{
+                        else if(pStatProto->controlstat==0){
                             ui->rbRemoteControl->setChecked(true);
+                        }
+                        else{
+                            qDebug() << "unknown control stat:" << pStatProto->controlstat;
                         }
                         m_statBuffer.remove(0,sizeof(telecommu_stat_proto)); //处理完了11个字节
                     }
                     else {
+                        qDebug() << "Get Stat Pack err CRC " << QString::number(pStatProto->crc,16) << " local calc crc:" << QString::number(calccrc,16);
                         m_statBuffer.remove(0,3);   //只扔掉3个字节
                     }
                 }
@@ -273,7 +307,7 @@ void TelemetryInWidget::processPendingStatgrams()
             }
         }
     }
-    while(m_statBuffer.size() > sizeof(telecommu_cmd_proto));
+    while(m_statBuffer.size() >= (int)sizeof(telecommu_stat_proto));
 }
 
 void TelemetryInWidget::sendCmdPack(unsigned char c1,unsigned char c2,const char * msg)
