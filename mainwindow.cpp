@@ -20,13 +20,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMenuBar * menuBar = new QMenuBar(this);
 	setMenuBar(menuBar);
 
-	QToolBar* toolBar = new QToolBar(this);
+    toolBar = new QToolBar(this);
 	addToolBar(toolBar);
 
 	QWidget * centralWidget = new QWidget(this);
 	setCentralWidget(centralWidget);
 
-	QStatusBar * statusBar = new QStatusBar(this);
+    statusBar = new QStatusBar(this);
+    statusLabel = new QLabel("Info");
+    statusBar->addWidget(statusLabel);
 	setStatusBar(statusBar);
 
 
@@ -41,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	createDockWindows();
 
 	connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(aboutQt()));
+    //connect(this,SIGNAL(statusSignal(QString)),this,SLOT(status(QString)));
     setMinimumSize(1200, 580);
 }
 
@@ -50,9 +53,10 @@ MainWindow::~MainWindow()
 }
 
 
-slots void MainWindow::hello1()
+void MainWindow::status(QString msg)
 {
-	QMessageBox::critical(NULL, "critical", "Content", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    //QMessageBox::critical(NULL, "critical", "Content", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    statusLabel->setText(msg);
 }
 
 QString MainWindow::ToQString(const std::string& cstr)

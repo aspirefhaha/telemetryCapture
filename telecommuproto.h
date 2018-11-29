@@ -16,22 +16,22 @@ typedef struct _telecommu_cmdstat_proto {
     unsigned char crc;
 }telecommu_cmd_proto;
 
-#define TC_HEAD1    0xEB
-#define TC_HEAD2    0x99
-#define TC_STARTSAVE1 0x12
-#define TC_STOPSAVE1 0x13
-#define TC_STARTSEND1 0x14
-#define TC_STOPSEND1 0x15
-#define TC_LOCALCONTROL1 0x17
-#define TC_REMOTECONTROL1 0x18
-#define TC_STARTSAVE2 0xED
-#define TC_STOPSAVE2 0xEC
-#define TC_STARTSEND2 0xEB
-#define TC_STOPSEND2 0xEA
-#define TC_LOCALCONTROL2 0xE8
-#define TC_REMOTECONTROL2 0xE7
-#define TC_TYPECMD  0x01
-#define TC_TYPESTAT 0x02
+#define TC_HEAD1    0xEBu
+#define TC_HEAD2    0x99u
+#define TC_STARTSAVE1 0x12u
+#define TC_STOPSAVE1 0x13u
+#define TC_STARTSEND1 0x14u
+#define TC_STOPSEND1 0x15u
+#define TC_LOCALCONTROL1 0x17u
+#define TC_REMOTECONTROL1 0x18u
+#define TC_STARTSAVE2 0xEDu
+#define TC_STOPSAVE2 0xECu
+#define TC_STARTSEND2 0xEBu
+#define TC_STOPSEND2 0xEAu
+#define TC_LOCALCONTROL2 0xE8u
+#define TC_REMOTECONTROL2 0xE7u
+#define TC_TYPECMD  0x01u
+#define TC_TYPESTAT 0x02u
 
 
 typedef struct _telecommu_stat_proto {
@@ -50,10 +50,14 @@ typedef struct _telecommu_stat_proto {
 }telecommu_stat_proto;
 
 #define ASSM_CMD_PACK(tmpPack,c1,c2)    telecommu_cmd_proto tmpPack;\
-                                                tmpPack.head1=TC_HEAD1;tmpPack.head2=TC_HEAD2;tmpPack.ptype=0x01;\
+                                                tmpPack.head1=TC_HEAD1;tmpPack.head2=TC_HEAD2;tmpPack.ptype=TC_TYPECMD;\
                                                 tmpPack.reserved1=tmpPack.reserved2=tmpPack.reserved3=tmpPack.reserved4=0;\
                                                 tmpPack.cmd1=c1;tmpPack.cmd2=c2
-#define CALC_PACK_CRC(tmpPack)  do{unsigned char *a = (unsigned char*)&tmpPack;unsigned char crc = 0;for(unsigned i = 2;i<sizeof(tmpPack);i++){crc += a[i];}tmpPack.crc=crc;}while(0)
-#define CK_PACK_CRC(pPack,retcrc) do{unsigned char * a = (unsigned char *)pPack;retcrc = 0;for(unsigned i = 2; i<sizeof(*pPack);i++){retcrc += a[i];}}while(0)
+#define ASSM_STAT_PACK(tmpPack,s1,s2,s3,s4)    telecommu_stat_proto tmpPack;\
+                                                tmpPack.head1=TC_HEAD1;tmpPack.head2=TC_HEAD2;tmpPack.ptype=TC_TYPESTAT;\
+                                                tmpPack.reserved1=tmpPack.reserved2=tmpPack.reserved3=tmpPack.reserved4=0;\
+                                                tmpPack.savestat=s1;tmpPack.sendstat=s2;tmpPack.lockstat=s3;tmpPack.controlstat=s4
+#define CALC_PACK_CRC(tmpPack)  do{unsigned char *a = (unsigned char*)&tmpPack;unsigned char crc = 0;for(unsigned i = 2;i<sizeof(tmpPack)-1;i++){crc += a[i];}tmpPack.crc=crc;}while(0)
+#define CK_PACK_CRC(pPack,retcrc) do{unsigned char * a = (unsigned char *)pPack;retcrc = 0;for(unsigned i = 2; i<sizeof(*pPack)-1;i++){retcrc += a[i];/*qDebug() << QString::number(retcrc,16) << " " << QString::number(a[i],16);*/}}while(0)
 #pragma pack(pop)
 #endif // TELECOMMUPROTO_H

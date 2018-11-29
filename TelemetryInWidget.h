@@ -33,6 +33,8 @@ public slots:
     void slotStopSave();
     void slotLocalControl();
     void slotRemoteControl();
+signals:
+    void udpReceived(QString);
 private:
     QUdpSocket * m_DataSocket; //数据帧接收
     QUdpSocket * m_CmdSocket;   //命令帧发送

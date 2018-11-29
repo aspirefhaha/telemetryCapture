@@ -20,7 +20,7 @@ chartWidget::chartWidget(QWidget *parent) :
 
     initUI();
 
-    timer->setInterval(5);
+    timer->setInterval(50);
     timer->start();
 
     initSlot();

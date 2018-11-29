@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
+#include <QLabel>
 #include <string>
 
 using namespace std;
@@ -19,11 +20,15 @@ public:
 
 private:
     Ui::MainWindow *ui;
-
+    QToolBar * toolBar;
+    QStatusBar * statusBar;
+    QLabel * statusLabel;
 
 public slots:
-	void hello1();
+    void status(QString);
 	void aboutQt();
+//signals:
+//    void statusSignal(QString);
 public:
     void createDockWindows();
     static QString ToQString(const std::string& cstr);
