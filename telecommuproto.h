@@ -49,6 +49,23 @@ typedef struct _telecommu_stat_proto {
     unsigned char crc;
 }telecommu_stat_proto;
 
+#define TC_SUBTAIL1 0xEBu
+#define TC_SUBTAIL2 0x90u
+#define TC_FULLTAIL1    0x14u
+#define TC_FULLTAIL2    0x6Fu
+
+#define TC_DATAPREFIXLEN    1032
+#define TC_SUBFRAMELEN 320
+#define TC_SUBTIMELEN   8
+#define TC_SUBOFFULL    16
+
+#define TC_VICEYAWOFFSET 3
+#define TC_VICEPITCHOFFSET 4
+#define TC_VICEROLLOFFSET 5
+
+#define TC_STATFREQ 500
+#define TC_DATAFREQ 2000
+
 #define ASSM_CMD_PACK(tmpPack,c1,c2)    telecommu_cmd_proto tmpPack;\
                                                 tmpPack.head1=TC_HEAD1;tmpPack.head2=TC_HEAD2;tmpPack.ptype=TC_TYPECMD;\
                                                 tmpPack.reserved1=tmpPack.reserved2=tmpPack.reserved3=tmpPack.reserved4=0;\
@@ -57,7 +74,7 @@ typedef struct _telecommu_stat_proto {
                                                 tmpPack.head1=TC_HEAD1;tmpPack.head2=TC_HEAD2;tmpPack.ptype=TC_TYPESTAT;\
                                                 tmpPack.reserved1=tmpPack.reserved2=tmpPack.reserved3=tmpPack.reserved4=0;\
                                                 tmpPack.savestat=s1;tmpPack.sendstat=s2;tmpPack.lockstat=s3;tmpPack.controlstat=s4
-#define CALC_PACK_CRC(tmpPack)  do{unsigned char *a = (unsigned char*)&tmpPack;unsigned char crc = 0;for(unsigned i = 2;i<sizeof(tmpPack)-1;i++){crc += a[i];}tmpPack.crc=crc;}while(0)
-#define CK_PACK_CRC(pPack,retcrc) do{unsigned char * a = (unsigned char *)pPack;retcrc = 0;for(unsigned i = 2; i<sizeof(*pPack)-1;i++){retcrc += a[i];/*qDebug() << QString::number(retcrc,16) << " " << QString::number(a[i],16);*/}}while(0)
+#define CALC_PACK_CRC(tmpPack)  do{unsigned char *a = (unsigned char*)&tmpPack;unsigned char crc = 0;for(unsigned i = 0;i<sizeof(tmpPack)-1;i++){crc += a[i];}tmpPack.crc=crc;}while(0)
+#define CK_PACK_CRC(pPack,retcrc) do{unsigned char * a = (unsigned char *)pPack;retcrc = 0;for(unsigned i = 0; i<sizeof(*pPack)-1;i++){retcrc += a[i];/*qDebug() << QString::number(retcrc,16) << " " << QString::number(a[i],16);*/}}while(0)
 #pragma pack(pop)
 #endif // TELECOMMUPROTO_H

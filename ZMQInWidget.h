@@ -9,6 +9,8 @@ namespace Ui {
 class ZMQInWidget :
 	public QWidget
 {
+    Q_OBJECT
+
 public:
 	ZMQInWidget(QWidget * parent);
 	~ZMQInWidget();

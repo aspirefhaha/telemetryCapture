@@ -34,11 +34,12 @@ private:
     void updateData();
 
     Ui::chartwindow *ui;
-
+#define LINESENUM 3
     ChartView *chartView;
     QChart *chart;
     Callout *tip;
-    QLineSeries *series;
+    QLineSeries *m_pSeries[LINESENUM];
+    qreal rawdata[LINESENUM];
 
     QTimer *timer;
 
@@ -50,6 +51,8 @@ private slots:
     void timerSlot();
     void buttonSlot();
     void tipSlot(QPointF position, bool isHovering);
+public:
+    void updateRawData(qreal * datas);
 
 };
 

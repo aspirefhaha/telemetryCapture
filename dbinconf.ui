@@ -7,26 +7,37 @@
     <x>0</x>
     <y>0</y>
     <width>260</width>
-    <height>212</height>
+    <height>273</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>DBConf</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QCheckBox" name="cbEnabled">
-       <property name="text">
-        <string>启用</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <layout class="QFormLayout" name="formLayout">
        <property name="sizeConstraint">
         <enum>QLayout::SetMaximumSize</enum>
+       </property>
+       <property name="verticalSpacing">
+        <number>0</number>
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
@@ -59,28 +70,28 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>用户名</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="3" column="1">
         <widget class="QLineEdit" name="leUser">
          <property name="text">
           <string>spacetrek</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
           <string>密码</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QLineEdit" name="lePwd">
          <property name="text">
           <string>zhu88jie</string>
@@ -90,12 +101,29 @@
          </property>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>数据库名</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="leDBName">
+         <property name="text">
+          <string>telemetrydb</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QPushButton" name="btnReset">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>重置</string>
          </property>
@@ -121,6 +149,98 @@
          </property>
         </widget>
        </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbQuery">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>查询</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QFormLayout" name="formLayout_2">
+       <property name="verticalSpacing">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>启始-结束</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="leStartLine">
+         <property name="text">
+          <string>1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="rbLineLimit">
+         <property name="text">
+          <string>数量限制</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="leEndLine">
+         <property name="text">
+          <string>100</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>启始-结束</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="leStartTime">
+         <property name="text">
+          <string>2018-12-01 12:00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QRadioButton" name="rbTimeLimit">
+         <property name="text">
+          <string>时间限制</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="leEndTime">
+         <property name="text">
+          <string>2018-12-01 13:00:00</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
@@ -128,24 +248,7 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>cbEnabled</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>DBConf</receiver>
-   <slot>ckAllControls()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>17</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>165</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>ckAllControls()</slot>
  </slots>

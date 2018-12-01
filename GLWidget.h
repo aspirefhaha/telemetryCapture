@@ -28,6 +28,7 @@ public:
 
 public slots:
     void pitchChanged(qreal angle);
+    void postureChanged(qreal yaw,qreal pitch,qreal roll);
 private:
     qreal               m_AspectRatio;
     Format3DS           m_3DS;

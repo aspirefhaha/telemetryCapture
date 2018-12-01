@@ -9,7 +9,8 @@ TeleFakeWin::TeleFakeWin(QWidget *parent) :
     ui(new Ui::TeleFakeWin),
     m_DataSocket(NULL),m_CmdSocket(NULL),m_StatSocket(NULL),
     m_saveStat(0),m_sendStat(0),m_lockStat(0),m_controlStat(0),
-    statTimer(this)
+    statTimer(this),dataTimer(this),
+    m_Roll(0),m_Yaw(0),m_Pitch(0)
 {
     ui->setupUi(this);
     saveGroup.addButton(ui->rbStartSave);
@@ -33,6 +34,11 @@ TeleFakeWin::TeleFakeWin(QWidget *parent) :
     connect(ui->pbLock,SIGNAL(clicked()),this,SLOT(slotLock()));
     connect(ui->pbUnlock,SIGNAL(clicked()),this,SLOT(slotUnlock()));
     connect(&statTimer,SIGNAL(timeout()),this,SLOT(slotSendStat()));
+    connect(&dataTimer,SIGNAL(timeout()),this,SLOT(slotSendData()));
+
+    connect(ui->vsYaw,SIGNAL(valueChanged(int)),this,SLOT(slotYawChanged(int)));
+    connect(ui->vsPitch,SIGNAL(valueChanged(int)),this,SLOT(slotPitchChanged(int)));
+    connect(ui->vsRoll,SIGNAL(valueChanged(int)),this,SLOT(slotRollChanged(int)));
 }
 
 TeleFakeWin::~TeleFakeWin()
@@ -161,12 +167,18 @@ void TeleFakeWin::slotConfirm()
     ui->pbRemoteControl->setEnabled(true);
     ui->pbLock->setEnabled(true);
     ui->pbUnlock->setEnabled(true);
-    statTimer.start(500);
+    statTimer.start(TC_STATFREQ);
+    int datafreq = ui->leDataFreq->text().toInt();
+    if(datafreq <= 0){
+        TC_DATAFREQ;
+    }
+    dataTimer.start(datafreq);
 }
 
 void TeleFakeWin::slotReset()
 {
     statTimer.stop();
+    dataTimer.stop();
     if(m_DataSocket!=NULL){
         if(m_DataSocket->isValid()){
             m_DataSocket->close();
@@ -218,7 +230,7 @@ void TeleFakeWin::processPendingCmdgrams()
             if((unsigned char)m_cmdBuffer.at(1) != TC_HEAD2){
                 m_cmdBuffer.remove(0,2);
             }
-            else if(m_cmdBuffer.size() >= sizeof(telecommu_cmd_proto)){   //包头符合要求且包长够一个完整协议
+            else if((unsigned long)m_cmdBuffer.size() >= sizeof(telecommu_cmd_proto)){   //包头符合要求且包长够一个完整协议
                 if((unsigned char)m_cmdBuffer.at(2) == TC_TYPECMD){  //是命令帧
                     telecommu_cmd_proto * pCmdProto = (telecommu_cmd_proto *) m_cmdBuffer.data();
                     unsigned char calccrc;
@@ -258,13 +270,9 @@ void TeleFakeWin::processPendingCmdgrams()
             }
         }
     }
-    while(m_cmdBuffer.size() >= sizeof(telecommu_cmd_proto));
+    while((unsigned long)m_cmdBuffer.size() >= sizeof(telecommu_cmd_proto));
 }
 
-void TeleFakeWin::sendDataPack()
-{
-
-}
 
 void TeleFakeWin::sendStatPack(const char * msg)
 {
@@ -273,6 +281,74 @@ void TeleFakeWin::sendStatPack(const char * msg)
     if (sizeof(localControlPack) != m_StatSocket->writeDatagram((const char *)&localControlPack,sizeof(localControlPack),m_statTarget,m_statPort)){
         QMessageBox::critical(NULL, "critical", ToQString(msg), QMessageBox::Yes , QMessageBox::Yes);
     }
+}
+
+void TeleFakeWin::sendDataPack(const char *msg)
+{
+    static bool sIsTwice = false;
+    static unsigned char syncId = 0;
+    unsigned char tmpbuf[TC_DATAPREFIXLEN];
+    unsigned char composesubframe[TC_SUBTIMELEN+TC_SUBFRAMELEN];
+    unsigned char * psubframe = &composesubframe[TC_SUBTIMELEN];
+    memset(composesubframe,0,TC_SUBFRAMELEN+TC_SUBTIMELEN);
+    if(!sIsTwice){
+        if(TC_DATAPREFIXLEN != m_DataSocket->writeDatagram((const char *)tmpbuf,TC_DATAPREFIXLEN,m_dataTarget,m_dataPort)){
+            qDebug() << msg;
+        }
+    }
+    for(int i = 0 ;i<TC_SUBOFFULL;i++){
+        QDateTime now = QDateTime::currentDateTime();
+        QTime nowtime = now.time();
+        QDate nowdate = now.date();
+        unsigned int msec = nowtime.msec();
+        composesubframe[0] = (((msec % 10) & 0xf) << 4) ;
+        composesubframe[1] = (((msec  / 100) & 0xf) << 4) | (((msec % 100) / 10) & 0xf)  ;
+        unsigned int sec = nowtime.second();
+        composesubframe[2] = (((sec / 10) & 0xf) << 4) | ((sec % 10) & 0xf);
+        //qDebug() << sec << " after" << QString::number(composesubframe[2],16);
+        unsigned int min = nowtime.minute();
+        composesubframe[3] = ((min / 10) & 0xf << 4) | ((min % 10) & 0xf);
+        unsigned int hour = nowtime.hour();
+        unsigned int day = nowdate.dayOfYear();
+        composesubframe[4] = ((day % 10) << 6) | ((hour / 10) << 4) | ((hour % 10));
+        composesubframe[5] = ((day / 100) << 6) | (((day / 10) % 10) << 2) | (day %10);
+        *psubframe = syncId;
+        syncId++;
+        if(i==TC_SUBOFFULL-1){  //全帧结尾
+            psubframe[TC_SUBFRAMELEN-2] = TC_FULLTAIL1;
+            psubframe[TC_SUBFRAMELEN-1] = TC_FULLTAIL2;
+        }
+        else{   //子帧结尾
+            psubframe[TC_SUBFRAMELEN-2] = TC_SUBTAIL1;
+            psubframe[TC_SUBFRAMELEN-1] = TC_SUBTAIL2;
+        }
+        //开始填充副帧内容
+        switch(i){
+        case 0:
+            //qDebug() << m_Yaw << " Hex " << QString::number(m_Yaw,16);
+            composesubframe[TC_SUBTIMELEN + TC_VICEYAWOFFSET] = (( m_Yaw / 100) << 4) | ((m_Yaw / 10) % 10);
+            //qDebug() << QString::number(composesubframe[TC_SUBTIMELEN + TC_VICEYAWOFFSET],16);
+            composesubframe[TC_SUBTIMELEN + TC_VICEPITCHOFFSET] = (( m_Pitch / 100) << 4) | ((m_Pitch / 10) % 10);
+            composesubframe[TC_SUBTIMELEN + TC_VICEROLLOFFSET] = (( m_Roll / 100) << 4) | ((m_Roll / 10) % 10);
+            break;
+        case 1:
+            composesubframe[TC_SUBTIMELEN + TC_VICEYAWOFFSET] = (( m_Yaw % 10) << 4) ;
+            //qDebug() << (m_Yaw % 100) << " left shift 4" <<  QString::number((m_Yaw % 100) << 4,16);
+            //qDebug() << QString::number(composesubframe[TC_SUBTIMELEN + TC_VICEYAWOFFSET],16);
+            composesubframe[TC_SUBTIMELEN + TC_VICEPITCHOFFSET] = (( m_Pitch % 10) << 4) ;
+            composesubframe[TC_SUBTIMELEN + TC_VICEROLLOFFSET] = (( m_Roll % 10) << 4) ;
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        }
+
+        if(TC_SUBFRAMELEN + TC_SUBTIMELEN != m_DataSocket->writeDatagram((const char *)composesubframe,TC_SUBFRAMELEN+TC_SUBTIMELEN,m_dataTarget,m_dataPort)){
+            qDebug() << msg;
+        }
+    }
+    sIsTwice = !sIsTwice;
 }
 
 void TeleFakeWin::slotLocalControl()
@@ -338,4 +414,30 @@ void TeleFakeWin::slotSendStat()
         return;
     }
     sendStatPack("发送状态包失败");
+}
+
+void TeleFakeWin::slotSendData()
+{
+    if(!ckDataSocket()){
+        return;
+    }
+    sendDataPack("发射数据包失败");
+}
+
+void TeleFakeWin::slotYawChanged(int nv)
+{
+    m_Yaw = nv;
+    ui->lbYaw->setText(QString::number(nv));
+}
+
+void TeleFakeWin::slotPitchChanged(int nv)
+{
+    m_Pitch = nv;
+    ui->lbPitch->setText(QString::number(nv));
+}
+
+void TeleFakeWin::slotRollChanged(int nv)
+{
+    m_Roll = nv;
+    ui->lbRoll->setText(QString::number(nv));
 }

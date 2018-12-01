@@ -8,6 +8,7 @@ namespace Ui {
 class ZMQOutWidget :
 	public QWidget
 {
+    Q_OBJECT
 public:
 	ZMQOutWidget(QWidget * parent);
 	~ZMQOutWidget();

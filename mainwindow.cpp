@@ -3,13 +3,11 @@
 #include "DBInConfWidget.h"
 #include "ZMQInWidget.h"
 #include "ZMQOutWidget.h"
-#include "DBOutWidget.h"
-#include "CenterWidget.h"
-#include "TelemetryInWidget.h"
 #include <qmessagebox.h>
 #include <QDockWidget>
 #include <QListWidget>
 #include <QTextCodec>
+#include "telecommuproto.h"
 //#include "commonutils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -22,9 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     toolBar = new QToolBar(this);
 	addToolBar(toolBar);
-
-	QWidget * centralWidget = new QWidget(this);
-	setCentralWidget(centralWidget);
 
     statusBar = new QStatusBar(this);
     statusLabel = new QLabel("Info");
@@ -39,10 +34,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMenu *aboutMenu = menuBar->addMenu(tr("About"));
 	aboutMenu->addAction(aboutAction);
 
-	toolBar->addAction(aboutAction);
+    toolBar->addAction(aboutAction);
+
 	createDockWindows();
 
-	connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(aboutQt()));
+    connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(aboutQt()));
+
     //connect(this,SIGNAL(statusSignal(QString)),this,SLOT(status(QString)));
     setMinimumSize(1200, 580);
 }
@@ -57,6 +54,23 @@ void MainWindow::status(QString msg)
 {
     //QMessageBox::critical(NULL, "critical", "Content", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     statusLabel->setText(msg);
+}
+
+void MainWindow::procFullFrame(QByteArray ba)
+{
+    //qDebug() << "main get full frame " << ba.toHex();
+    unsigned char * rowdata = (unsigned char *)ba.data();
+    int posdata[3];
+    for(int i = 0;i<3;i++){
+        unsigned char rawv1 = rowdata[TC_SUBTIMELEN + TC_VICEYAWOFFSET + i];
+        unsigned char rawv2 = rowdata[(TC_SUBTIMELEN + TC_SUBFRAMELEN) * 1 +  TC_SUBTIMELEN + TC_VICEYAWOFFSET + i];
+        //unsigned char rawv3 = rowdata[(TC_SUBTIMELEN + TC_SUBFRAMELEN) * 2 +  TC_SUBTIMELEN + TC_VICEYAWOFFSET + i];
+        //unsigned char rawv4 = rowdata[(TC_SUBTIMELEN + TC_SUBFRAMELEN) * 3 +  TC_SUBTIMELEN + TC_VICEYAWOFFSET + i];
+        posdata[i] = ( rawv1 >> 4 )  * 100  + (rawv1 & 0xf) * 10 + (rawv2 >> 4);
+    }
+
+    emit recvData(ba);
+    emit postureChanged((qreal)posdata[0],(qreal)posdata[1],(qreal)posdata[2]);
 }
 
 QString MainWindow::ToQString(const std::string& cstr)
@@ -75,13 +89,13 @@ void MainWindow::createDockWindows()
 {
     QDockWidget * dock = new QDockWidget(ToQString("遥测入"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	TelemetryInWidget * telein = new TelemetryInWidget(this);
-	dock->setWidget(telein);
+    m_telein = new TelemetryInWidget(this);
+    dock->setWidget(m_telein);
 	addDockWidget(Qt::LeftDockWidgetArea, dock); 
 	
     dock = new QDockWidget(ToQString("数据库入"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	DBInConfWidget * dbinconfDlg = new DBInConfWidget(this);
+    DBInConfWidget * dbinconfDlg = new DBInConfWidget(this);
 	dock->setWidget(dbinconfDlg);
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
 
@@ -99,12 +113,19 @@ void MainWindow::createDockWindows()
 
     dock = new QDockWidget(ToQString("数据库出"), this);
 	dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	DBOutWidget * dbout = new DBOutWidget(this);
-	dock->setWidget(dbout);
+    m_dbout = new DBOutWidget(this);
+    dock->setWidget(m_dbout);
 	addDockWidget(Qt::RightDockWidgetArea, dock);
 
-    CenterWidget * centerWidget = new CenterWidget(this);
-    setCentralWidget(centerWidget);
+    m_centerWidget = new CenterWidget(this);
+    setCentralWidget(m_centerWidget);
+
+    connect(m_telein,SIGNAL(getFullFrame(QByteArray)),this,SLOT(procFullFrame(QByteArray)));
+    connect(this,SIGNAL(postureChanged(qreal,qreal,qreal)),m_centerWidget,SLOT(postureChanged(qreal,qreal,qreal)));
+    connect(this,SIGNAL(recvData(QByteArray)),m_centerWidget,SLOT(recvData(QByteArray)));
+    connect(this,SIGNAL(recvData(QByteArray)),m_dbout,SLOT(slotInsertTeleData(QByteArray)));
+
+    connect(dbinconfDlg,SIGNAL(procFullFrame(QByteArray)), this,SLOT(procFullFrame(QByteArray)));
 
 	/*dock = new QDockWidget(tr("Paragraphs"), this);
 	QListWidget * paragraphList = new QListWidget(dock);

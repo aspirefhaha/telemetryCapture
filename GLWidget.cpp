@@ -25,6 +25,7 @@ SpaceTrekGLWidget::SpaceTrekGLWidget( int w,int h,QWidget* parent ):QOpenGLWidge
     // 设置摄像机和线程
     m_Camera.SetPos( QVector3D( 0.0, 6.0, 20.0 ) );
     m_3DS.Load( ":/rocket_ok.3ds" );
+
 }
 /*---------------------------------------------------------------------------*/
 SpaceTrekGLWidget::~SpaceTrekGLWidget( void )
@@ -161,6 +162,15 @@ void SpaceTrekGLWidget::pitchChanged(qreal angle)
 {
     makeCurrent();
     m_pitch=angle;
+    update();
+}
+
+void SpaceTrekGLWidget::postureChanged(qreal yaw, qreal pitch, qreal roll)
+{
+    makeCurrent();
+    m_pitch = pitch;
+    m_yaw = yaw;
+    m_roll = roll;
     update();
 }
 
