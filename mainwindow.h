@@ -33,6 +33,7 @@ public slots:
 	void aboutQt();
 signals:
     void postureChanged(qreal,qreal,qreal);
+    void recvData(QByteArray);
 //    void statusSignal(QString);
 public:
     void createDockWindows();

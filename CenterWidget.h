@@ -22,6 +22,7 @@ private slots:
     void on_listWidget_itemClicked(QListWidgetItem *item);
     void on_centerTabChanged(int idx);
     void postureChanged(qreal yaw,qreal pitch,qreal roll);
+    void recvData(QByteArray);
 
 private:
     Ui::centerWidget *ui;

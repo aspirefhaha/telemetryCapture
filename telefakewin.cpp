@@ -301,10 +301,11 @@ void TeleFakeWin::sendDataPack(const char *msg)
         QTime nowtime = now.time();
         QDate nowdate = now.date();
         unsigned int msec = nowtime.msec();
-        composesubframe[0] = ((msec % 10) & 0xf << 4) ;
-        composesubframe[1] = ((msec  / 100) & 0xf << 4) | (((msec % 100) / 10) & 0xf)  ;
+        composesubframe[0] = (((msec % 10) & 0xf) << 4) ;
+        composesubframe[1] = (((msec  / 100) & 0xf) << 4) | (((msec % 100) / 10) & 0xf)  ;
         unsigned int sec = nowtime.second();
-        composesubframe[2] = ((sec / 10) & 0xf << 4) | ((sec % 10) & 0xf);
+        composesubframe[2] = (((sec / 10) & 0xf) << 4) | ((sec % 10) & 0xf);
+        //qDebug() << sec << " after" << QString::number(composesubframe[2],16);
         unsigned int min = nowtime.minute();
         composesubframe[3] = ((min / 10) & 0xf << 4) | ((min % 10) & 0xf);
         unsigned int hour = nowtime.hour();

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets serialport opengl network
+QT       += core gui widgets serialport opengl network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += charts
 

@@ -21,9 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
     toolBar = new QToolBar(this);
 	addToolBar(toolBar);
 
-	QWidget * centralWidget = new QWidget(this);
-	setCentralWidget(centralWidget);
-
     statusBar = new QStatusBar(this);
     statusLabel = new QLabel("Info");
     statusBar->addWidget(statusLabel);
@@ -70,6 +67,8 @@ void MainWindow::procFullFrame(QByteArray ba)
         //unsigned char rawv4 = rowdata[(TC_SUBTIMELEN + TC_SUBFRAMELEN) * 3 +  TC_SUBTIMELEN + TC_VICEYAWOFFSET + i];
         posdata[i] = ( rawv1 >> 4 )  * 100  + (rawv1 & 0xf) * 10 + (rawv2 >> 4);
     }
+
+    emit recvData(ba);
     emit postureChanged((qreal)posdata[0],(qreal)posdata[1],(qreal)posdata[2]);
 }
 
@@ -122,6 +121,8 @@ void MainWindow::createDockWindows()
 
     connect(m_telein,SIGNAL(getFullFrame(QByteArray)),this,SLOT(procFullFrame(QByteArray)));
     connect(this,SIGNAL(postureChanged(qreal,qreal,qreal)),m_centerWidget,SLOT(postureChanged(qreal,qreal,qreal)));
+    connect(this,SIGNAL(recvData(QByteArray)),m_centerWidget,SLOT(recvData(QByteArray)));
+    connect(this,SIGNAL(recvData(QByteArray)),m_dbout,SLOT(slotInsertTeleData(QByteArray)));
 
 	/*dock = new QDockWidget(tr("Paragraphs"), this);
 	QListWidget * paragraphList = new QListWidget(dock);

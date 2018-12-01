@@ -2,8 +2,10 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QByteArray>
+#include <QVariant>
 #include "chartWidget.h"
 #include "barwidget.h"
+#include "commonutils.h"
 #include <QDebug>
 
 CenterWidget::CenterWidget(QWidget * parent):
@@ -56,6 +58,7 @@ void CenterWidget::wheelEvent(QWheelEvent *event)
 void CenterWidget::mockData()
 {
     //ui->listView->add
+    ui->listWidget->clear();
 }
 
 void CenterWidget:: on_centerTabChanged(int idx)
@@ -66,7 +69,20 @@ void CenterWidget:: on_centerTabChanged(int idx)
     }
 }
 
-void CenterWidget:: postureChanged(qreal yaw, qreal pitch, qreal roll)
+void CenterWidget::recvData(QByteArray ba)
+{
+    QDateTime recvDateTime = ParseDateTime(ba);
+    QListWidgetItem * item = new QListWidgetItem;
+    item->setData(Qt::DisplayRole, recvDateTime.toString());
+    item->setData(Qt::UserRole,ba);
+    ui->listWidget->insertItem(0,item);
+    if(ui->listWidget->count()>=100){
+        ui->listWidget->removeItemWidget(ui->listWidget->item(100));
+        //ui->listWidget->clear();
+    }
+}
+
+void CenterWidget::postureChanged(qreal yaw, qreal pitch, qreal roll)
 {
     m_pGLWidget->postureChanged(yaw,pitch,roll);
     qreal rawdata[3] = {yaw,pitch,roll};
@@ -75,13 +91,6 @@ void CenterWidget:: postureChanged(qreal yaw, qreal pitch, qreal roll)
 
 void CenterWidget::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-    //QMessageBox::critical(NULL, "critical", item->text(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-    QString dispstr = "";
-    for ( int i = 0 ; i< 128 ;i++){
-        int ranum1= qrand()% 16,ranum2 = qrand() % 16;
-        dispstr.append(QString::number(ranum1,16) + QString::number(ranum2,16) + " ");
-    }
-    // QByteArray str2 = QByteArray::fromHex(dispstr.toLatin1().data());
-    ui->textEdit->setText(item->text()  + "    "+ dispstr);
+    QByteArray ba = item->data(Qt::UserRole).toByteArray();
+    ui->textEdit->setText(item->text()  + "  "+  ba.toHex());
 }
