@@ -38,6 +38,10 @@ public slots:
     void slotLock();
     void slotUnlock();
     void slotSendStat();
+    void slotSendData();
+    void slotYawChanged(int);
+    void slotPitchChanged(int);
+    void slotRollChanged(int);
 
 private:
     QUdpSocket * m_DataSocket; //数据帧接收
@@ -55,7 +59,12 @@ private:
     unsigned char m_controlStat;
 
     QTimer statTimer;
+    QTimer dataTimer;
     QByteArray m_cmdBuffer;
+
+    int m_Roll;
+    int m_Yaw ;
+    int m_Pitch;
 
 private:
     bool initDataSocket();
@@ -64,7 +73,7 @@ private:
     bool ckStatSocket();
     bool ckDataSocket();
     void sendStatPack(const char *  msg);
-    void sendDataPack();
+    void sendDataPack(const char *  msg);
 };
 
 #endif // TELEFAKEWIN_H

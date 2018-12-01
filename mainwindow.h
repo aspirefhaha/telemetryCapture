@@ -4,6 +4,9 @@
 #include <QLabel>
 #include <string>
 
+#include "DBOutWidget.h"
+#include "CenterWidget.h"
+#include "TelemetryInWidget.h"
 using namespace std;
 
 namespace Ui {
@@ -26,12 +29,19 @@ private:
 
 public slots:
     void status(QString);
+    void procFullFrame(QByteArray ba);
 	void aboutQt();
-//signals:
+signals:
+    void postureChanged(qreal,qreal,qreal);
 //    void statusSignal(QString);
 public:
     void createDockWindows();
     static QString ToQString(const std::string& cstr);
+
+private :
+    TelemetryInWidget * m_telein;
+    CenterWidget * m_centerWidget;
+    DBOutWidget * m_dbout;
 };
 
 #endif // MAINWINDOW_H

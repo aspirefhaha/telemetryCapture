@@ -20,7 +20,7 @@ chartWidget::chartWidget(QWidget *parent) :
 
     initUI();
 
-    timer->setInterval(50);
+    timer->setInterval(100);
     timer->start();
 
     initSlot();
@@ -48,24 +48,29 @@ void chartWidget::initUI()
     initChart();
 }
 
+#define XRANGE  960
+
 void chartWidget::initChart()
 {
-    series = new QLineSeries;
+    for(int i = 0 ;i < LINESENUM;i++){
+           m_pSeries[i] = new QLineSeries(this);
+           chart->addSeries(m_pSeries[i]);
+    }
+
     //series->setUseOpenGL(true);//openGl 加速
     //qDebug()<<series->useOpenGL();
 
-    chart->addSeries(series);
 
 //    series->setUseOpenGL(true);
 
     chart->createDefaultAxes();
-    chart->axisY()->setRange(-10, 10);
+    chart->axisY()->setRange(-10, 380);
     chart->axisX()->setRange(0, 960);
 
     chart->axisX()->setTitleFont(QFont("Microsoft YaHei", 10, QFont::Normal, true));
     chart->axisY()->setTitleFont(QFont("Microsoft YaHei", 10, QFont::Normal, true));
-    chart->axisX()->setTitleText("Time/sec");
-    chart->axisY()->setTitleText("Speed/m");
+    chart->axisX()->setTitleText("Time/ 0.1 sec");
+    chart->axisY()->setTitleText("Degree");
 
     chart->axisX()->setGridLineVisible(false);
     chart->axisY()->setGridLineVisible(false);
@@ -83,35 +88,47 @@ void chartWidget::initSlot()
 {
     connect(timer, SIGNAL(timeout()), this, SLOT(timerSlot()));
     //connect(ui->stopBtn, SIGNAL(clicked(bool)), this, SLOT(buttonSlot()));
-    connect(series, SIGNAL(hovered(QPointF, bool)), this, SLOT(tipSlot(QPointF,bool)));
+    for(int i =0 ;i<LINESENUM; i++)
+        connect(m_pSeries[i], SIGNAL(hovered(QPointF, bool)), this, SLOT(tipSlot(QPointF,bool)));
+}
+
+void chartWidget::updateRawData(qreal *datas)
+{
+    for(int i = 0;i<LINESENUM;i++){
+        rawdata[i] = datas[i];
+    }
 }
 
 void chartWidget::updateData()
 {
-    int i;
-    QVector<QPointF> oldData = series->pointsVector();
-    QVector<QPointF> data;
+    for(int j = 0;j<LINESENUM;j++){
+        int i;
 
-    if (oldData.size() < 961) {
-        data = series->pointsVector();
-    } else {
-        /* 添加之前老的数据到新的vector中，不复制最前的数据，即每次替换前面的数据
-         * 由于这里每次只添加1个数据，所以为1，使用时根据实际情况修改
-         */
-        for (i = 1; i < oldData.size(); ++i) {
-            data.append(QPointF(i - 1 , oldData.at(i).y()));
+        QVector<QPointF> oldData = m_pSeries[j]->pointsVector();
+        QVector<QPointF> data;
+
+        if (oldData.size() < 961) {
+            data = m_pSeries[j]->pointsVector();
+        } else {
+            /* 添加之前老的数据到新的vector中，不复制最前的数据，即每次替换前面的数据
+             * 由于这里每次只添加1个数据，所以为1，使用时根据实际情况修改
+             */
+            for (i = 1; i < oldData.size(); ++i) {
+                data.append(QPointF(i - 1 , oldData.at(i).y()));
+            }
         }
-    }
 
-    qint64 size = data.size();
-    /* 这里表示插入新的数据，因为每次只插入1个，这里为i < 1,
-     * 但为了后面方便插入多个数据，先这样写
-     */
-    for(i = 0; i < 1; ++i){
-        data.append(QPointF(i + size, (qrand() %1000) / 100.0 * sin(M_PI * count * 4 / 180)));
-    }
+        qint64 size = data.size();
+        /* 这里表示插入新的数据，因为每次只插入1个，这里为i < 1,
+         * 但为了后面方便插入多个数据，先这样写
+         */
+        for(i = 0; i < 1; ++i){
+            data.append(QPointF(i + size,rawdata[j]));
+        }
 
-    series->replace(data);
+        m_pSeries[j]->replace(data);
+
+    }
 
     count++;
 }

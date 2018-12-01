@@ -217,12 +217,152 @@ QSize TelemetryInWidget::sizeHint() const
 
 void TelemetryInWidget::processPendingDatagrams()
 {
-    QByteArray datagram;
     quint64 datasize = m_DataSocket->pendingDatagramSize();
-    qDebug() << "get udp data size: " << datasize;
-    datagram.resize(datasize);
+    QByteArray datagram(datasize,Qt::Uninitialized);
     m_DataSocket->readDatagram(datagram.data(),datagram.size());
-    qDebug() << "Receice Data:" << datagram.toHex();
+    // qDebug() << "Receice Data(" << datasize << "):" << datagram.toHex();
+    m_dataBuffer += datagram;
+//    qDebug() << "start datasize " << m_dataBuffer.size();
+    if(m_dataBuffer.size() >= TC_SUBFRAMELEN + TC_SUBTIMELEN){
+        int buflen = m_dataBuffer.size();
+        bool findflag = false;  //用于判断本轮是否是要删除前面没有用的数据，当是false的时候，需要删除长度大于TC_SUBFRAMELEN + TC_SUBTIMELEN的前面所有数据数据
+        for(int i= 0 ;i < buflen ;i++){
+            if((unsigned char)m_dataBuffer.at(i) == TC_SUBTAIL1){ //找到子帧结尾第一个字节
+//                qDebug() << "find subframe tail1 at" << i;
+                if( i == buflen - 1){ // 到结尾了，少了一个TC_SUBTAIL2
+                    findflag = true;
+                    //去掉前面多余的无用字节
+                    int cutlen = buflen - (TC_SUBFRAMELEN + TC_SUBTIMELEN -1 );
+                    if(cutlen > 0){
+                        m_dataBuffer.remove(0,cutlen);
+                    }
+                    break;
+                }
+                else if((unsigned char ) m_dataBuffer.at(i+1) == TC_SUBTAIL2){ // 找到了子帧的帧尾
+//                    qDebug() << "find subframe tail2 at" << i+1;
+                    if(i < TC_SUBFRAMELEN + TC_SUBTIMELEN -1){ //本子帧不全或者不是帧结尾
+
+                    }
+                    else{   //一个完整子帧可以处理了,不过有可能不是有效的子帧，可能正好在数据中存在两个字节和子帧的帧尾相同
+                        findflag = true;
+                        // qDebug() << "find one subframe";
+                        m_frames.append(m_dataBuffer.mid(i-TC_SUBFRAMELEN - TC_SUBTIMELEN + 2,TC_SUBFRAMELEN+TC_SUBTIMELEN));
+                        i++;
+                        //m_dataBuffer.remove(0,i+1);
+                    }
+                }
+            }
+            else if((unsigned char)m_dataBuffer.at(i) == TC_FULLTAIL1){ //找到全帧结尾第一个字节
+                if( i == buflen - 1){ // 到结尾了，少了一个TC_FULLTAIL2
+                    findflag = true;
+                    //去掉前面多余的无用字节
+                    int cutlen = buflen - (TC_SUBFRAMELEN + TC_SUBTIMELEN -1 );
+                    if(cutlen > 0){
+                        m_dataBuffer.remove(0,cutlen);
+                    }
+                    break;
+                }
+                else if((unsigned char ) m_dataBuffer.at(i+1) == TC_FULLTAIL2){ // 找到了全帧的帧尾
+                    if(i < TC_SUBFRAMELEN + TC_SUBTIMELEN -1){ //本子帧不全
+
+                    }
+                    else{   //一个完整子帧可以处理了,不过有可能不是有效的子帧，可能正好在数据中存在两个字节和子帧的帧尾相同
+                        findflag = true;
+//                        qDebug() << "find on fullframe";
+                        m_frames.append(m_dataBuffer.mid(i-TC_SUBFRAMELEN - TC_SUBTIMELEN + 2,TC_SUBFRAMELEN+TC_SUBTIMELEN));
+                        i++;
+                        //m_dataBuffer.remove(0,i+1);
+                    }
+                }
+            }
+        }//一轮寻找结束
+        if(m_dataBuffer.size() >= TC_SUBFRAMELEN + TC_SUBTIMELEN){
+            m_dataBuffer.remove(0,m_dataBuffer.size() - (TC_SUBTIMELEN + TC_SUBFRAMELEN-1));
+        }
+    }
+//    qDebug() << "in " << m_subframecount << " size " << m_dataBuffer.size() ;
+    if(m_frames.size() >= TC_SUBOFFULL){
+        processFullFrame();
+    }
+}
+
+void TelemetryInWidget::processFullFrame()
+{
+    if(m_frames.size() <= 0){
+        return;
+    }
+    //qDebug() << "before process vec size " << m_frames.size() ;
+
+    bool findFullTail = false;
+    char syncId = 0;
+    char nextSyncId = 0;
+    QVector<QByteArray> findFullFrames;
+    QByteArray curFullFrames;
+    QVector<int> delIndexs;
+    for(int i = m_frames.size() -1 ;i>=0;i--){
+        const QByteArray &frame = m_frames.at(i);
+        //找到全帧的结尾
+        unsigned char tail1 = (unsigned char )frame.at(TC_SUBFRAMELEN+TC_SUBTIMELEN-2);
+        unsigned char tail2 = (unsigned char )frame.at(TC_SUBFRAMELEN+TC_SUBTIMELEN-1);
+        //qDebug() << frame.toHex();
+        //qDebug() << QString::number(tail1 ,16) << " " << QString::number(tail2,16);
+        if( tail1 == TC_FULLTAIL1 && tail2 == TC_FULLTAIL2){
+            // qDebug() << "find tail frame";
+            if(findFullTail){
+                //两个全帧结尾之间没有足够的子帧
+                curFullFrames.clear();
+            }
+            findFullTail = true;
+            syncId = frame.at(TC_SUBTIMELEN);
+            nextSyncId = syncId - 1;
+            delIndexs.append(i);
+            curFullFrames.prepend(frame);
+        }
+        else if(tail1 == TC_SUBTAIL1 && tail2 == TC_SUBTAIL2){
+            //找到了子帧
+            if(findFullTail){
+                //已经找到了全帧尾帧
+                delIndexs.append(i);
+                syncId = frame.at(TC_SUBTIMELEN);
+                if(syncId == nextSyncId){ //子帧的syncId对应没有问题
+                    // qDebug() << " find sub frame";
+                    nextSyncId--;
+                    curFullFrames.prepend(frame);
+                }
+                else{
+                    //错误的子帧
+                    qDebug() << "bad sync need " << nextSyncId << " but get " << syncId;
+                }
+                if(curFullFrames.size() == (TC_SUBFRAMELEN + TC_SUBTIMELEN) * TC_SUBOFFULL ){
+                    //一个全帧ok了
+                    findFullFrames.prepend(curFullFrames);
+                    findFullTail = false;
+
+                }
+            }
+            else{ //没有找到过对应的尾帧
+                //暂时什么都不用做,等待下次处理
+            }
+        }
+        else{
+            //错误的同步字，删除帧
+            delIndexs.append(i);
+        }
+    }
+
+    //删除没有用的帧，包括帧已经过多，需要删除
+    for(QVector<int>::iterator iiter=delIndexs.begin();iiter != delIndexs.end();iiter++){
+        m_frames.remove(*iiter,1);
+    }
+    if(m_frames.size() >= 3* TC_SUBOFFULL){
+        m_frames.remove(0,TC_SUBOFFULL);
+    }
+    // qDebug() << "find good full frame " << findFullFrames.size();
+    for(QVector<QByteArray>::iterator vaiter = findFullFrames.begin();vaiter!=findFullFrames.end();vaiter++){
+        emit getFullFrame(*vaiter);
+    }
+
+
 }
 
 void TelemetryInWidget::processPendingStatgrams()
@@ -235,7 +375,7 @@ void TelemetryInWidget::processPendingStatgrams()
             .arg(current_date_time.toString("hh:mm:ss zzz"))
             .arg(datasize)
             .arg(QString(datagram.toHex())) ;
-    qDebug()<< debugmsg;
+    // qDebug()<< debugmsg;
     emit udpReceived(debugmsg);
     m_statBuffer +=  datagram;
     do {

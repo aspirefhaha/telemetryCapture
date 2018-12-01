@@ -33,12 +33,14 @@ CenterWidget::~CenterWidget()
 
 void CenterWidget::keyPressEvent(QKeyEvent *event)
 {
+    Q_UNUSED(event);
     //m_pGLWidget->keyPressEvent(event);
     qDebug() << "keyPressEvent";
 }
 
 void CenterWidget::wheelEvent(QWheelEvent *event)
 {
+    Q_UNUSED(event);
     //m_pGLWidget->wheelEvent(event);
     qDebug() << "wheelEvent";
 }
@@ -62,6 +64,13 @@ void CenterWidget:: on_centerTabChanged(int idx)
     if(idx==1){
         barwidget->updateBarData();
     }
+}
+
+void CenterWidget:: postureChanged(qreal yaw, qreal pitch, qreal roll)
+{
+    m_pGLWidget->postureChanged(yaw,pitch,roll);
+    qreal rawdata[3] = {yaw,pitch,roll};
+    chartwidget->updateRawData((qreal *)rawdata);
 }
 
 void CenterWidget::on_listWidget_itemClicked(QListWidgetItem *item)

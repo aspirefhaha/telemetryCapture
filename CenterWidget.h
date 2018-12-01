@@ -3,6 +3,7 @@
 #include <QWidget>
 #include "ui_centerwindow.h"
 #include "barwidget.h"
+#include "chartWidget.h"
 #include "GLWidget.h"
 
 namespace Ui {
@@ -20,10 +21,11 @@ public:
 private slots:
     void on_listWidget_itemClicked(QListWidgetItem *item);
     void on_centerTabChanged(int idx);
+    void postureChanged(qreal yaw,qreal pitch,qreal roll);
 
 private:
     Ui::centerWidget *ui;
-    QWidget * chartwidget;
+    chartWidget * chartwidget;
     barWidget * barwidget;
    SpaceTrekGLWidget * m_pGLWidget;
     void mockData();

@@ -35,6 +35,7 @@ public slots:
     void slotRemoteControl();
 signals:
     void udpReceived(QString);
+    void getFullFrame(QByteArray);
 private:
     QUdpSocket * m_DataSocket; //数据帧接收
     QUdpSocket * m_CmdSocket;   //命令帧发送
@@ -52,6 +53,9 @@ private:
     void sendCmdPack(unsigned char c1,unsigned char c2,const char *  msg);
     QByteArray m_statBuffer;
     QByteArray m_dataBuffer;
+
+    QVector<QByteArray> m_frames;
+    void processFullFrame();
 
 };
 

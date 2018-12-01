@@ -29,6 +29,7 @@ SOURCES +=\
     commonutils.cpp
 
 HEADERS  += telefakewin.h \
-    commonutils.h
+    commonutils.h \
+    telecommuproto.h
 
 FORMS    += telefakewin.ui
