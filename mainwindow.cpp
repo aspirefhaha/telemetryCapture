@@ -34,10 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMenu *aboutMenu = menuBar->addMenu(tr("About"));
 	aboutMenu->addAction(aboutAction);
 
-	toolBar->addAction(aboutAction);
+    toolBar->addAction(aboutAction);
+
 	createDockWindows();
 
-	connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(aboutQt()));
+    connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(aboutQt()));
 
     //connect(this,SIGNAL(statusSignal(QString)),this,SLOT(status(QString)));
     setMinimumSize(1200, 580);
@@ -94,7 +95,7 @@ void MainWindow::createDockWindows()
 	
     dock = new QDockWidget(ToQString("Êý¾Ý¿âÈë"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	DBInConfWidget * dbinconfDlg = new DBInConfWidget(this);
+    DBInConfWidget * dbinconfDlg = new DBInConfWidget(this);
 	dock->setWidget(dbinconfDlg);
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
 
@@ -123,6 +124,8 @@ void MainWindow::createDockWindows()
     connect(this,SIGNAL(postureChanged(qreal,qreal,qreal)),m_centerWidget,SLOT(postureChanged(qreal,qreal,qreal)));
     connect(this,SIGNAL(recvData(QByteArray)),m_centerWidget,SLOT(recvData(QByteArray)));
     connect(this,SIGNAL(recvData(QByteArray)),m_dbout,SLOT(slotInsertTeleData(QByteArray)));
+
+    connect(dbinconfDlg,SIGNAL(procFullFrame(QByteArray)), this,SLOT(procFullFrame(QByteArray)));
 
 	/*dock = new QDockWidget(tr("Paragraphs"), this);
 	QListWidget * paragraphList = new QListWidget(dock);

@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <string>
 
+#include <QSqlDatabase>
 #include "DBOutWidget.h"
 #include "CenterWidget.h"
 #include "TelemetryInWidget.h"

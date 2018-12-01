@@ -10,7 +10,7 @@ DBOutWidget::DBOutWidget(QWidget * parent) :QWidget(parent), ui(new Ui::DBOut), 
 {
     ui->setupUi(this);
 
-    m_db = QSqlDatabase::addDatabase("QMYSQL");
+
     connect(ui->btnConfirm,SIGNAL(clicked()),this,SLOT(slotConfirm()));
     connect(ui->btnReset,SIGNAL(clicked()),this,SLOT(slotReset()));
     ui->btnReset->setEnabled(false);
@@ -29,6 +29,13 @@ QSize DBOutWidget::sizeHint() const
 
 void DBOutWidget::slotConfirm()
 {
+    if(m_db.isOpen()){
+        m_db.close();
+    }
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+        m_db = QSqlDatabase::database("qt_sql_default_connection");
+    else
+        m_db = QSqlDatabase::addDatabase("QMYSQL");
     m_db.setHostName(ui->leServer->text());
     m_db.setPort(ui->lePort->text().toInt());
     m_db.setDatabaseName(ui->leDBName->text());       //这里输入你的数据库名
@@ -38,6 +45,7 @@ void DBOutWidget::slotConfirm()
         QMessageBox::critical(0, QObject::tr("无法打开数据库"),"无法创建数据库连接！ ", QMessageBox::Cancel);
         return;
     }
+    ui->lbStatus->setText("连接成功！");
     m_isDBOpened = true;
     ui->btnReset->setEnabled(true);
     ui->btnConfirm->setEnabled(false);
@@ -45,9 +53,9 @@ void DBOutWidget::slotConfirm()
 
 void DBOutWidget::slotReset()
 {
-    if(m_db.isOpen()){
-        m_db.close();
-    }
+//    if(m_db.isOpen()){
+//        m_db.close();
+//    }
     m_isDBOpened = false;
     ui->btnConfirm->setEnabled(true);
     ui->btnReset->setEnabled(false);
