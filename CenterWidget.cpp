@@ -13,6 +13,8 @@ CenterWidget::CenterWidget(QWidget * parent):
     ui(new Ui::centerWidget)
 {
     ui->setupUi(this);
+    ui->gridLayout->removeWidget(ui->tabWidget);
+    ui->gridLayout->addWidget(ui->tabWidget,1,1,2,1);
     mockData();
     chartwidget = new chartWidget(this);
     barwidget = new barWidget(this);
@@ -24,12 +26,17 @@ CenterWidget::CenterWidget(QWidget * parent):
     ui->gridLayout->addWidget(m_pGLWidget,0,0);
 
     connect(ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(on_centerTabChanged(int)));
-
+    connect(ui->pbClearList,SIGNAL(clicked()),this,SLOT(clearDataList()));
 }
 
 CenterWidget::~CenterWidget()
 {
 
+}
+
+void CenterWidget::clearDataList()
+{
+    ui->listWidget->clear();
 }
 
 
