@@ -23,6 +23,7 @@ private slots:
     void on_centerTabChanged(int idx);
     void postureChanged(qreal yaw,qreal pitch,qreal roll);
     void recvData(QByteArray);
+    void clearDataList();
 
 private:
     Ui::centerWidget *ui;
