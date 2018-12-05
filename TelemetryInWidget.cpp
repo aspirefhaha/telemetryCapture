@@ -81,7 +81,7 @@ bool TelemetryInWidget::initDataSocket()
             }
         }
         else{
-            QMessageBox::critical(NULL, "critical", ToQString("请先重置服务，或关闭已经打开的本程序的其他终端"), QMessageBox::Yes , QMessageBox::Yes);
+            QMessageBox::critical(NULL, "critical", ToQString("请先重置服务，或关闭已经打开的本程序的其他终端！"), QMessageBox::Yes , QMessageBox::Yes);
             return false;
         }
     }
@@ -124,7 +124,7 @@ bool TelemetryInWidget::initStatSocket()
     }
     quint32 bindport = addraport.at(1).toUInt();
     if(bindport == 0){
-        QMessageBox::critical(NULL, "critical", ToQString("请输入正确的状态服务端口"), QMessageBox::Yes , QMessageBox::Yes);
+        QMessageBox::critical(NULL, "critical", ToQString("请输入正确的状态服务端口！"), QMessageBox::Yes , QMessageBox::Yes);
         return false;
     }
     m_statTarget = QHostAddress(addraport.at(0));
@@ -143,12 +143,12 @@ bool TelemetryInWidget::initStatSocket()
         if(bindret){
             bindret = m_StatSocket->joinMulticastGroup(m_statTarget);
             if(!bindret){
-                QMessageBox::critical(NULL, "critical", ToQString("加入状态组播失败"), QMessageBox::Yes , QMessageBox::Yes);
+                QMessageBox::critical(NULL, "critical", ToQString("加入状态组播失败！"), QMessageBox::Yes , QMessageBox::Yes);
                 return false;
             }
         }
         else{
-            QMessageBox::critical(NULL, "critical", ToQString("请先重置服务，或关闭已经打开的本程序的其他终端"), QMessageBox::Yes , QMessageBox::Yes);
+            QMessageBox::critical(NULL, "critical", ToQString("请先重置服务，或关闭已经打开的本程序的其他终端！"), QMessageBox::Yes , QMessageBox::Yes);
             return false;
         }
     }
@@ -477,7 +477,7 @@ void TelemetryInWidget::slotStartSave()
 {
     if(!ckCmdSocket())
         return;
-    sendCmdPack(TC_STARTSAVE1,TC_STARTSAVE2,"发射开始保存失败");
+    sendCmdPack(TC_STARTSAVE1,TC_STARTSAVE2,"发射开始保存失败！");
 }
 
 void TelemetryInWidget::slotStopSave()
@@ -491,13 +491,13 @@ void TelemetryInWidget::slotStartSend()
 {
     if(!ckCmdSocket())
         return;
-    sendCmdPack(TC_STARTSEND1,TC_STARTSEND2,"发射开始发送失败");
+    sendCmdPack(TC_STARTSEND1,TC_STARTSEND2,"发射开始发送失败！");
 }
 void TelemetryInWidget::slotStopSend()
 {
     if(!ckCmdSocket())
         return;
-    sendCmdPack(TC_STOPSEND1,TC_STOPSEND2,"发射停止发送失败");
+    sendCmdPack(TC_STOPSEND1,TC_STOPSEND2,"发射停止发送失败！");
 }
 
 bool TelemetryInWidget::ckCmdSocket()

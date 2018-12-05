@@ -117,7 +117,7 @@ bool TeleFakeWin::initCmdSocket()
             }
         }
         else{
-            QMessageBox::critical(NULL, "critical", ToQString("请先重置服务，或关闭已经打开的本程序的其他终端"), QMessageBox::Yes , QMessageBox::Yes);
+            QMessageBox::critical(NULL, "critical", ToQString("请先重置服务，或关闭已经打开的本程序的其他终端！"), QMessageBox::Yes , QMessageBox::Yes);
             return false;
         }
     }
@@ -137,7 +137,7 @@ bool TeleFakeWin::initStatSocket()
     }
     m_statPort = addraport.at(1).toUInt();
     if(m_statPort == 0){
-        QMessageBox::critical(NULL, "critical", ToQString("请输入正确的状态服务端口"), QMessageBox::Yes , QMessageBox::Yes);
+        QMessageBox::critical(NULL, "critical", ToQString("请输入正确的状态服务端口！"), QMessageBox::Yes , QMessageBox::Yes);
         return false;
     }
     m_statTarget = QHostAddress(addraport.at(0));
@@ -421,7 +421,7 @@ void TeleFakeWin::slotSendData()
     if(!ckDataSocket()){
         return;
     }
-    sendDataPack("发射数据包失败");
+    sendDataPack("发射数据包失败！");
 }
 
 void TeleFakeWin::slotYawChanged(int nv)
