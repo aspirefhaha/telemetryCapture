@@ -16,6 +16,9 @@ chartWidget::chartWidget(QWidget *parent) :
     count(0),
     isStopping(false)
 {
+	for (int i = 0; i < LINESENUM; i++) {
+		rawdata[i] = 0.0;
+	}
     ui->setupUi(this);
 
     initUI();
@@ -48,7 +51,7 @@ void chartWidget::initUI()
     initChart();
 }
 
-#define XRANGE  960
+#define XRANGE  96
 
 void chartWidget::initChart()
 {
@@ -65,7 +68,7 @@ void chartWidget::initChart()
 
     chart->createDefaultAxes();
     chart->axisY()->setRange(-10, 380);
-    chart->axisX()->setRange(0, 960);
+    chart->axisX()->setRange(0, XRANGE);
 
     chart->axisX()->setTitleFont(QFont("Microsoft YaHei", 10, QFont::Normal, true));
     chart->axisY()->setTitleFont(QFont("Microsoft YaHei", 10, QFont::Normal, true));
@@ -107,7 +110,7 @@ void chartWidget::updateData()
         QVector<QPointF> oldData = m_pSeries[j]->pointsVector();
         QVector<QPointF> data;
 
-        if (oldData.size() < 961) {
+        if (oldData.size() < (XRANGE+1)) {
             data = m_pSeries[j]->pointsVector();
         } else {
             /* 添加之前老的数据到新的vector中，不复制最前的数据，即每次替换前面的数据
@@ -124,6 +127,7 @@ void chartWidget::updateData()
          */
         for(i = 0; i < 1; ++i){
             data.append(QPointF(i + size,rawdata[j]));
+			//data.append(QPointF(i + size, (qrand() % 1000) / 100.0 * sin(M_PI * count * 4 / 180)));
         }
 
         m_pSeries[j]->replace(data);

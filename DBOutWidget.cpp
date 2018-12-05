@@ -42,10 +42,10 @@ void DBOutWidget::slotConfirm()
     m_db.setUserName(ui->leUser->text());
     m_db.setPassword(ui->lePwd->text());   //这里输入你的密码
     if (!m_db.open()) {
-        QMessageBox::critical(0, QObject::tr("无法打开数据库"),"无法创建数据库连接！ ", QMessageBox::Cancel);
+        QMessageBox::critical(0, QObject::tr("无法打开数据库！"),"无法创建数据库连接！ ", QMessageBox::Cancel);
         return;
     }
-    ui->lbStatus->setText("连接成功！");
+    ui->lbStatus->setText("连接成功！！");
     m_isDBOpened = true;
     ui->btnReset->setEnabled(true);
     ui->btnConfirm->setEnabled(false);
@@ -76,10 +76,10 @@ void DBOutWidget::slotInsertTeleData(QByteArray ba)
     query.bindValue(":bindata",ba);
     if(query.exec()){
         m_savedItemCount++;
-        ui->lbStatus->setText(QString("保存 %1 条 %2").arg(m_savedItemCount).arg(recvDateTime.toString()));
+        ui->lbStatus->setText(QString("保存 %1 %2").arg(m_savedItemCount).arg(recvDateTime.toString()));
     }
     else{
-        ui->lbStatus->setText("数据库存储失败");
+        ui->lbStatus->setText("数据库存储失败！");
         qDebug() << query.lastError().text();
     }
 }

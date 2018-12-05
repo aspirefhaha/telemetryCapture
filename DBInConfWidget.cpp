@@ -47,7 +47,7 @@ void DBInConfWidget::slotConfirm()
     m_db.setUserName(ui->leUser->text());
     m_db.setPassword(ui->lePwd->text());   //这里输入你的密码
     if (!m_db.open()) {
-        QMessageBox::critical(0, QObject::tr("无法打开数据库"),"无法创建数据库连接！ ", QMessageBox::Cancel);
+        QMessageBox::critical(0, QObject::tr("无法打开数据库！"),"无法创建数据库连接！ ", QMessageBox::Cancel);
         return;
     }
     //ui->lbStatus->setText("连接成功！");
